@@ -9,14 +9,31 @@ Se abre con doble clic y funciona hasta con el wifi apagado.
 
 ---
 
-## Cómo se usa (30 segundos)
+## Si lo vas a usar con Claude (la forma fácil)
+
+Abrí Claude Code y pegale esto tal cual:
+
+```
+Bajate este repo en una carpeta del escritorio:
+https://github.com/Agustin-Ruppel/exposure-dashboard
+
+Adentro hay un archivo que se llama EMPEZA-ACA.md.
+Leelo y hacé lo que dice.
+```
+
+Te va a abrir el dashboard en el navegador, explicarte qué estás viendo y ofrecerte cargar tus
+números o cambiar lo que quieras. No hace falta que sepas nada más.
+
+---
+
+## Si preferís sin Claude (30 segundos)
 
 1. **Descargá el proyecto** — botón verde `Code` → `Download ZIP` → descomprimir.
 2. **Doble clic en `index.html`.** Listo, ya lo estás viendo.
 3. **Para poner tus números:** abrí `datos.js` con cualquier editor de texto, cambiá lo que quieras,
    guardá y recargá la página.
 
-Eso es todo. No hay `npm install`, no hay build, no hay cuenta que crear.
+No hay `npm install`, no hay build, no hay cuenta que crear.
 
 ---
 
@@ -74,9 +91,10 @@ Y las varas del embudo están en `pintarEmbudo`, en el array `pasos` (`vara: 12`
 
 ## Modificarlo con Claude Code
 
-El repo trae un `CLAUDE.md` con el mapa del proyecto. Abrí Claude Code en la carpeta y pedile
-lo que quieras en castellano: *"agregá un KPI de LTV"*, *"sacá la sección de contenido"*,
-*"cambiá el acento a verde"*. Ya sabe dónde está cada cosa.
+El repo trae `EMPEZA-ACA.md` (cómo arranca) y `CLAUDE.md` (el mapa técnico). Abrí Claude Code en la
+carpeta y pedile lo que quieras en castellano: *"agregá un KPI de LTV"*, *"sacá la sección de
+contenido"*, *"cambiá el acento a verde"*, *"acá está mi planilla, cargá estos números"*.
+Ya sabe dónde está cada cosa y qué no tiene que romper.
 
 ---
 

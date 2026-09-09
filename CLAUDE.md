@@ -1,5 +1,9 @@
 # EXPOSURE · Panel del negocio — mapa para Claude
 
+> 🔴 **Si es la primera vez que abrís esta carpeta, leé [`EMPEZA-ACA.md`](EMPEZA-ACA.md) antes que
+> este archivo.** Ahí está cómo arranca la conversación, quién está del otro lado y cómo hablarle.
+> Este documento es la referencia técnica: se lee cuando ya vas a tocar `index.html`.
+
 Dashboard de negocio en **un solo HTML autosuficiente**. Se abre con `file://`, sin servidor.
 
 ## Las dos reglas que no se rompen
