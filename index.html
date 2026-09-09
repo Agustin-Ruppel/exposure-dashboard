@@ -1560,7 +1560,11 @@ document.getElementById("pieDoc").innerHTML =
      Una sola página visible por vez. Va por hash y no por history.pushState
      porque el panel se abre con file:// y ahí pushState tira SecurityError. */
   function ir(id, empujar){
-    if (IDS.indexOf(id) < 0) id = IDS[0];
+    /* se valida contra la página que existe en el DOM y no contra el menú: si
+       datos.js no trae un bloque, su página se borra y el item quedaría
+       apuntando al vacío (pantalla en blanco, sin error en consola). */
+    const vive = x => !!document.getElementById("p-" + String(x).slice(2));
+    if (!vive(id)) id = IDS.filter(vive)[0] || IDS[0];
     document.querySelectorAll(".pagina").forEach(pg =>
       pg.classList.toggle("act", pg.id === "p-" + id.slice(2)));
     items.forEach(b => b.classList.toggle("on", b.dataset.id === id));
@@ -2091,6 +2095,24 @@ const PIPE = (function pipeline(){
   document.addEventListener("click", ev => {
     const b = ev.target.closest("[data-ir]");
     if (b && window.__ir) window.__ir(b.dataset.ir);
+  });
+})();
+
+/* ══ 12c · limpieza del menú ══════════════════════════════════════════════
+   datos.js manda: si un bloque no está cargado, su página no se dibuja y su
+   item no tiene que quedar en el menú. Pasa de verdad al actualizar el panel
+   conservando un datos.js viejo. */
+(function limpiarMenu(){
+  document.querySelectorAll(".side-i").forEach(b => {
+    const pg = document.getElementById("p-" + b.dataset.id.slice(2));
+    if (!pg || !pg.querySelector("section")) b.remove();
+  });
+  document.querySelectorAll(".side-grupo").forEach(g => {
+    if (!g.querySelector(".side-i")) g.remove();
+  });
+  /* los atajos del resumen que apuntan a una página que ya no está */
+  document.querySelectorAll("[data-ir]").forEach(b => {
+    if (!document.getElementById("p-" + b.dataset.ir.slice(2))) b.closest(".atajo") ? b.remove() : b.remove();
   });
 })();
 

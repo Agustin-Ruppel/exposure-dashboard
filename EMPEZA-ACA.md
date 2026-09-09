@@ -82,6 +82,22 @@ un desastre al lado de uno de 31.
 
 ---
 
+## Si te piden actualizar a la última versión
+
+**El `datos.js` de la persona es sagrado: tiene sus números.** El orden es este:
+
+1. Copiá su `datos.js` a un lado antes de tocar nada.
+2. Traé la versión nueva del repo (`git pull`, o bajando el ZIP si no hay git).
+3. Volvé a poner **su** `datos.js`.
+4. **Comparalo contra el `datos.js` del repo nuevo.** Si la versión nueva trae bloques que él no
+   tiene (por ejemplo `pipeline`, `pipelineEtapas`, `reels`), sumáselos con datos de ejemplo,
+   decile qué son y qué página habilitan, y preguntale si quiere cargarlos con lo suyo.
+5. Abrí el panel y confirmá que sigue todo en pie.
+
+El panel está hecho para tolerar un `datos.js` incompleto: la página sin datos no se dibuja y su
+item se saca del menú solo. Así que **no inventes datos para llenar un bloque nuevo** — es mejor que
+la sección no aparezca a que aparezca con números falsos.
+
 ## Qué se toca para cada pedido
 
 | Si te pide… | Vas a… |

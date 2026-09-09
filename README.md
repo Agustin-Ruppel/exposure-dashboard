@@ -26,6 +26,35 @@ números o cambiar lo que quieras. No hace falta que sepas nada más.
 
 ---
 
+## Si ya lo tenías bajado y querés la versión nueva
+
+El panel se sigue actualizando. Lo importante es uno solo: **`datos.js` es tuyo, no lo pises.**
+
+Con Claude Code, pegale esto:
+
+```
+Actualizá este proyecto a la última versión del repo, pero conservá mi datos.js
+tal como está. Si el repo trae bloques de datos nuevos que a mí me faltan,
+sumalos a mi archivo con datos de ejemplo y avisame cuáles son.
+```
+
+A mano, si lo bajaste con git:
+
+```bash
+cp datos.js datos-mios.js     # copia de seguridad primero
+git pull
+cp datos-mios.js datos.js     # y volvés a poner los tuyos
+```
+
+Si lo bajaste como ZIP: descargá el ZIP nuevo, y **antes de reemplazar nada**, guardá tu `datos.js`
+viejo en el escritorio. Después copiás todo lo nuevo y pisás el `datos.js` nuevo con el tuyo.
+
+**No pasa nada si tu `datos.js` no tiene los bloques nuevos.** El panel se adapta solo: la página que
+no tiene datos no se dibuja y su item desaparece del menú. Cuando quieras esa sección, agregás el
+bloque y aparece.
+
+---
+
 ## Si preferís sin Claude (30 segundos)
 
 1. **Descargá el proyecto** — botón verde `Code` → `Download ZIP` → descomprimir.
