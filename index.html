@@ -182,6 +182,10 @@ h2{font:600 18px/1.25 var(--sans);letter-spacing:-.024em;margin:0}
 .grid-l{stroke:var(--border);stroke-dasharray:2 6;opacity:.45}
 .ejeY,.ejeX{fill:var(--muted-fg);font:500 10.5px var(--mono)}
 .serie-l{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+/* halo del trazo principal: el mismo path, borroso y por debajo. Da el brillo
+   de pantalla encendida sin tocar el color ni el contraste del dato. */
+.serie-glow{fill:none;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;
+  filter:blur(7px);opacity:.35}
 .punto{transition:r .15s var(--e)}
 .barra{transition:opacity .15s}
 .hoverband{fill:transparent;cursor:crosshair}
@@ -650,6 +654,22 @@ function escala(max){
   return {tope, ticks};
 }
 function pathDe(pts){ return pts.map((p,i) => (i?"L":"M") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" "); }
+/* Catmull-Rom convertida a bezier cúbica. La tensión baja (.16) redondea el
+   quiebre sin inventar picos que no están en los datos: una curva demasiado
+   suelta hace que la línea se pase del máximo real y eso ya es mentir. */
+function pathSuave(pts, tension){
+  if (pts.length < 3) return pathDe(pts);
+  const k = tension == null ? .16 : tension;
+  let d = "M" + pts[0][0].toFixed(1) + "," + pts[0][1].toFixed(1);
+  for (let i = 0; i < pts.length - 1; i++){
+    const p0 = pts[i-1] || pts[i], p1 = pts[i], p2 = pts[i+1], p3 = pts[i+2] || p2;
+    const c1 = [p1[0] + (p2[0]-p0[0]) * k, p1[1] + (p2[1]-p0[1]) * k];
+    const c2 = [p2[0] - (p3[0]-p1[0]) * k, p2[1] - (p3[1]-p1[1]) * k];
+    d += "C" + c1[0].toFixed(1)+","+c1[1].toFixed(1) + " " + c2[0].toFixed(1)+","+c2[1].toFixed(1)
+       + " " + p2[0].toFixed(1)+","+p2[1].toFixed(1);
+  }
+  return d;
+}
 function largoPath(d){
   const s = document.createElementNS("http://www.w3.org/2000/svg","svg");
   const p = document.createElementNS("http://www.w3.org/2000/svg","path");
@@ -659,15 +679,18 @@ function largoPath(d){
 function sparkline(serie, color, w, h, area){
   if (!serie || serie.length < 2) return "";
   const mx = Math.max.apply(null, serie), mn = Math.min.apply(null, serie), r = (mx - mn) || 1;
-  const paso = w / (serie.length - 1);
-  const pts = serie.map((v,i) => [i * paso, h - 2 - ((v - mn) / r) * (h - 4)]);
-  const d = pathDe(pts), uid = "g" + Math.random().toString(36).slice(2,8);
+  /* margen lateral: sin esto el último punto queda pegado al borde y el círculo
+     se corta por la mitad justo donde el ojo va a buscar el valor de hoy. */
+  const padX = 4, ancho = w - padX * 2, paso = ancho / (serie.length - 1);
+  const pts = serie.map((v,i) => [padX + i * paso, h - 3 - ((v - mn) / r) * (h - 6)]);
+  const d = pathSuave(pts), uid = "g" + Math.random().toString(36).slice(2,8);
   const ult = pts[pts.length-1];
   return '<svg viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none" aria-hidden="true">'
     + (area ? '<defs><linearGradient id="'+uid+'" x1="0" y1="0" x2="0" y2="1">'
         + '<stop offset="0%" stop-color="'+color+'" stop-opacity=".28"/>'
         + '<stop offset="100%" stop-color="'+color+'" stop-opacity="0"/></linearGradient></defs>'
-        + '<path class="area-anim" d="'+d+' L'+w+','+h+' L0,'+h+' Z" fill="url(#'+uid+')"/>' : "")
+        + '<path class="area-anim" d="'+d+' L'+(w-padX)+','+h+' L'+padX+','+h+' Z" fill="url(#'+uid+')"/>' : "")
+    + (area ? '<path class="serie-glow" d="'+d+'" stroke="'+color+'"/>' : "")
     + '<path class="serie-l line-anim" d="'+d+'" stroke="'+color+'" stroke-width="'+(area?2.5:2)+'" '
     + 'style="stroke-dasharray:'+largoPath(d)+';stroke-dashoffset:'+(REDUCIR?0:largoPath(d))+'" data-off="0"/>'
     + '<circle class="punto-anim" cx="'+ult[0].toFixed(1)+'" cy="'+ult[1].toFixed(1)+'" r="2.8" fill="'+color+'"/>'
@@ -794,6 +817,16 @@ function pintarAnio(){
   const y = v => T + ih - (v / es.tope) * ih;
   const bw = iw / M.length, gap = bw * .22, bAncho = (bw - gap * 2) / 2;
 
+  /* barra con las dos esquinas de arriba redondeadas y las de abajo en escuadra:
+     apoyada en el eje, como una barra de verdad. */
+  const barra = (x, yTop, w, base, fill, op, delay) => {
+    const h = Math.max(1, base - yTop), r = Math.min(4, w/2, h);
+    return '<path class="barra bar-anim" d="M'+x.toFixed(1)+','+base+' L'+x.toFixed(1)+','+(yTop+r).toFixed(1)
+      + ' Q'+x.toFixed(1)+','+yTop.toFixed(1)+' '+(x+r).toFixed(1)+','+yTop.toFixed(1)
+      + ' L'+(x+w-r).toFixed(1)+','+yTop.toFixed(1)
+      + ' Q'+(x+w).toFixed(1)+','+yTop.toFixed(1)+' '+(x+w).toFixed(1)+','+(yTop+r).toFixed(1)
+      + ' L'+(x+w).toFixed(1)+','+base+' Z" fill="'+fill+'" opacity="'+op+'" style="transition-delay:'+delay+'ms"/>';
+  };
   let s = '<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Facturado y cobrado, 12 meses">';
   s += '<defs><linearGradient id="gc" x1="0" y1="0" x2="0" y2="1">'
      + '<stop offset="0%" stop-color="var(--c1)" stop-opacity=".30"/>'
@@ -803,20 +836,19 @@ function pintarAnio(){
 
   if (acum) {
     const ptsC = cobr.map((v,i) => [L + bw*(i+.5), y(v)]), ptsF = fact.map((v,i) => [L + bw*(i+.5), y(v)]);
-    const dC = pathDe(ptsC), dF = pathDe(ptsF);
+    const dC = pathSuave(ptsC), dF = pathSuave(ptsF);
     s += '<path class="area-anim" d="'+dC+' L'+ptsC[ptsC.length-1][0].toFixed(1)+','+(T+ih)+' L'+ptsC[0][0].toFixed(1)+','+(T+ih)+' Z" fill="url(#gc)"/>';
     s += '<path class="serie-l line-anim" d="'+dF+'" stroke="var(--c1b)" style="stroke-dasharray:'+largoPath(dF)+';stroke-dashoffset:'+(REDUCIR?0:largoPath(dF))+'" data-off="0"/>';
+    s += '<path class="serie-glow" d="'+dC+'" stroke="var(--c1)"/>';
     s += '<path class="serie-l line-anim" d="'+dC+'" stroke="var(--c1)" style="stroke-dasharray:'+largoPath(dC)+';stroke-dashoffset:'+(REDUCIR?0:largoPath(dC))+'" data-off="0"/>';
     ptsC.forEach(p => s += '<circle class="punto-anim" cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3.4" fill="var(--c1)"/>');
-    const dM = pathDe(metaS.map((v,i) => [L + bw*(i+.5), y(v)]));
+    const dM = pathDe(metaS.map((v,i) => [L + bw*(i+.5), y(v)])); /* la meta es recta a propósito */
     s += '<path d="'+dM+'" fill="none" stroke="var(--warn)" stroke-width="1.8" stroke-dasharray="5 5" opacity=".8"/>';
   } else {
     M.forEach((m,i) => {
       const x = L + bw*i + gap, op = esParcial(m) ? .55 : 1;
-      s += '<rect class="barra bar-anim" x="'+x.toFixed(1)+'" y="'+y(fact[i]).toFixed(1)+'" width="'+bAncho.toFixed(1)
-         + '" height="'+Math.max(1,(T+ih-y(fact[i]))).toFixed(1)+'" rx="3" fill="var(--c1b)" opacity="'+op+'" style="transition-delay:'+(i*35)+'ms"/>';
-      s += '<rect class="barra bar-anim" x="'+(x+bAncho+1).toFixed(1)+'" y="'+y(cobr[i]).toFixed(1)+'" width="'+bAncho.toFixed(1)
-         + '" height="'+Math.max(1,(T+ih-y(cobr[i]))).toFixed(1)+'" rx="3" fill="var(--c1)" opacity="'+op+'" style="transition-delay:'+(i*35+60)+'ms"/>';
+      s += barra(x, y(fact[i]), bAncho, T+ih, "var(--c1b)", op, i*35);
+      s += barra(x+bAncho+1, y(cobr[i]), bAncho, T+ih, "var(--c1)", op, i*35+60);
     });
     s += '<line x1="'+L+'" y1="'+y(meta).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(meta).toFixed(1)
        + '" stroke="var(--warn)" stroke-width="1.8" stroke-dasharray="5 5" opacity=".85"/>'
@@ -1028,17 +1060,25 @@ function fila(i, nombre, valor, sub, prop, color){
 
   let s = '<svg class="chart" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Proyección de cash collected">';
   s += '<defs><linearGradient id="gp" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--c1)" stop-opacity=".26"/>'
-     + '<stop offset="100%" stop-color="var(--c1)" stop-opacity="0"/></linearGradient></defs>';
+     + '<stop offset="100%" stop-color="var(--c1)" stop-opacity="0"/></linearGradient>'
+     /* máscara horizontal: el relleno se desvanece antes de chocar contra el
+        corte de lo real, así no queda una pared vertical al final del área. */
+     + '<linearGradient id="gpFade" x1="0" y1="0" x2="1" y2="0">'
+     + '<stop offset="0%" stop-color="#fff" stop-opacity="1"/>'
+     + '<stop offset="82%" stop-color="#fff" stop-opacity="1"/>'
+     + '<stop offset="100%" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+     + '<mask id="mFade"><rect x="'+L+'" y="'+T+'" width="'+iw+'" height="'+ih+'" fill="url(#gpFade)"/></mask></defs>';
   es.ticks.forEach(val => s += '<line class="grid-l" x1="'+L+'" y1="'+y(val).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(val).toFixed(1)+'"/>'
     + '<text class="ejeY" x="'+(L-10)+'" y="'+(y(val)+3.5).toFixed(1)+'" text-anchor="end">'+moneyK(val)+"</text>");
   s += '<line x1="'+L+'" y1="'+y(D.marca.metaMensual).toFixed(1)+'" x2="'+(W-R)+'" y2="'+y(D.marca.metaMensual).toFixed(1)
      + '" stroke="var(--warn)" stroke-width="1.8" stroke-dasharray="5 5" opacity=".85"/>';
   const pReal = serieR.map((val,i) => [x(i), y(val)]);
-  const dR = pathDe(pReal);
-  s += '<path class="area-anim" d="'+dR+' L'+x(M.length-1).toFixed(1)+','+(T+ih)+' L'+L+','+(T+ih)+' Z" fill="url(#gp)"/>';
+  const dR = pathSuave(pReal);
+  s += '<path class="area-anim" d="'+dR+' L'+x(M.length-1).toFixed(1)+','+(T+ih)+' L'+L+','+(T+ih)+' Z" fill="url(#gp)" mask="url(#mFade)"/>';
+  s += '<path class="serie-glow" d="'+dR+'" stroke="var(--c1)"/>';
   s += '<path class="serie-l line-anim" d="'+dR+'" stroke="var(--c1)" style="stroke-dasharray:'+largoPath(dR)+';stroke-dashoffset:'+(REDUCIR?0:largoPath(dR))+'" data-off="0"/>';
   const pFut = [pReal[pReal.length-1]].concat(futuro.map((f,i) => [x(M.length+i), y(f.cobrado)]));
-  const dF = pathDe(pFut);
+  const dF = pathSuave(pFut);
   const banda = pFut.map((p,i) => [p[0], p[1] - (i*7)]).concat(pFut.slice().reverse().map((p,i) => [p[0], p[1] + ((pFut.length-1-i)*7)]));
   s += '<path d="'+pathDe(banda)+' Z" fill="var(--s6)" opacity=".10"/>';
   s += '<path class="serie-l line-anim" d="'+dF+'" stroke="var(--s6)" stroke-dasharray="7 6" style="opacity:'+(REDUCIR?1:0)+'" data-op="1"/>';
