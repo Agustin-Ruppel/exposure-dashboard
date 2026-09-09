@@ -88,7 +88,7 @@ const DATOS = {
     { formato: "YouTube",   piezas: 6,   views: 38200,   ctas: 6,  leads: 231, agendas: 39 },
   ],
 
-  /* ── 8 · Los reels y lo que trajo cada uno ────────────────────────────────
+  /* ── 9 · Los reels y lo que trajo cada uno ────────────────────────────────
      Métricas de Instagram REALES (views, likes, comentarios, fecha) de
      @alexmcarrera, bajadas el 9-sep-2026. Las columnas de negocio —leads,
      agendas, ventas, cobrado— son la atribución: de dónde salió cada venta.
@@ -126,7 +126,45 @@ const DATOS = {
       views:1884,   likes:27,   comentarios:11,  leads:11, agendas:2,  ventas:0, cobrado:0     },
   ],
 
-  /* ── 6 · Las cuotas por cobrar (estado de HOY, no de un período) ──────────
+  /* ── 6 · El pipeline — las oportunidades ABIERTAS de hoy ──────────────────
+     Es una foto del estado actual, no de un período: por eso no suma con los
+     meses ni con las llamadas. Lo que está acá todavía no es plata.
+
+     etapa: "Agendada" · "Presentada" · "Calificada" · "Propuesta" · "Seguimiento"
+       El orden de arriba es el del embudo y es el que dibuja las columnas.
+     dias: cuántos días lleva parada en esa etapa. Arriba de 7 se marca fría.
+     prob: probabilidad de cierre de ESA etapa, 0 a 100. Es lo que pondera el
+       valor del pipeline — sin esto, "tengo $180k en pipeline" no dice nada. */
+  pipelineEtapas: [
+    { nombre: "Agendada",    prob: 10 },
+    { nombre: "Presentada",  prob: 25 },
+    { nombre: "Calificada",  prob: 40 },
+    { nombre: "Propuesta",   prob: 60 },
+    { nombre: "Seguimiento", prob: 75 },
+  ],
+
+  pipeline: [
+    { lead:"Ignacio T.",    closer:"Yendry Molina",  etapa:"Seguimiento", monto:4900, dias:2,  fuente:"Instagram orgánico", prox:"Manda el primer pago el viernes" },
+    { lead:"Sofía L.",      closer:"Camilo Estrada", etapa:"Seguimiento", monto:5600, dias:3,  fuente:"Ads Meta",           prox:"Lo habla con el socio" },
+    { lead:"Bruno S.",      closer:"Yendry Molina",  etapa:"Propuesta",   monto:6800, dias:1,  fuente:"Referidos",          prox:"Le mandé el plan de pago en 3" },
+    { lead:"Facundo R.",    closer:"Rocío Pardo",    etapa:"Propuesta",   monto:3200, dias:4,  fuente:"YouTube",            prox:"Espera el cobro de un cliente" },
+    { lead:"Julián C.",     closer:"Camilo Estrada", etapa:"Propuesta",   monto:4200, dias:6,  fuente:"YouTube",            prox:"Pidió ver un caso parecido" },
+    { lead:"Mariana E.",    closer:"Yendry Molina",  etapa:"Propuesta",   monto:7500, dias:11, fuente:"Instagram orgánico", prox:"No contesta hace una semana" },
+    { lead:"Emiliano P.",   closer:"Nahuel Vidal",   etapa:"Calificada",  monto:4900, dias:1,  fuente:"Referidos",          prox:"Reagendó para el jueves" },
+    { lead:"Valentina O.",  closer:"Camilo Estrada", etapa:"Calificada",  monto:5600, dias:2,  fuente:"YouTube",            prox:"Segunda llamada agendada" },
+    { lead:"Tobías N.",     closer:"Rocío Pardo",    etapa:"Calificada",  monto:3000, dias:5,  fuente:"Ads Meta",           prox:"Quiere arrancar el mes que viene" },
+    { lead:"Camila R.",     closer:"Tomás Guzmán",   etapa:"Calificada",  monto:4200, dias:9,  fuente:"Instagram orgánico", prox:"Se enfrió después de la llamada" },
+    { lead:"Milagros H.",   closer:"Tomás Guzmán",   etapa:"Presentada",  monto:2800, dias:1,  fuente:"Instagram orgánico", prox:"Falta ver si califica" },
+    { lead:"Diego A.",      closer:"Yendry Molina",  etapa:"Presentada",  monto:4900, dias:2,  fuente:"Ads Meta",           prox:"Pidió pensarlo" },
+    { lead:"Renata C.",     closer:"Nahuel Vidal",   etapa:"Presentada",  monto:3200, dias:8,  fuente:"WhatsApp / otro",    prox:"Sin respuesta al seguimiento" },
+    { lead:"Iván M.",       closer:"Camilo Estrada", etapa:"Agendada",    monto:4900, dias:0,  fuente:"Instagram orgánico", prox:"Llamada mañana 15:00" },
+    { lead:"Paula G.",      closer:"Rocío Pardo",    etapa:"Agendada",    monto:4900, dias:0,  fuente:"Ads Meta",           prox:"Llamada mañana 17:30" },
+    { lead:"Santiago V.",   closer:"Yendry Molina",  etapa:"Agendada",    monto:6800, dias:1,  fuente:"Referidos",          prox:"Llamada el jueves" },
+    { lead:"Abril D.",      closer:"Nahuel Vidal",   etapa:"Agendada",    monto:3000, dias:3,  fuente:"YouTube",            prox:"Confirmó por WhatsApp" },
+    { lead:"Lautaro F.",    closer:"Tomás Guzmán",   etapa:"Agendada",    monto:2800, dias:6,  fuente:"Ads Meta",           prox:"Todavía no confirmó" },
+  ],
+
+  /* ── 7 · Las cuotas por cobrar (estado de HOY, no de un período) ──────────
      estado: "cobrado" · "por-cobrar" · "vencida" · "protocolo"              */
   cuotas: [
     { alumno: "M. Villalba",   monto: 1650, vence: "2026-09-02", closer: "Yendry Molina",  estado: "vencida"    },
@@ -145,7 +183,7 @@ const DATOS = {
     { alumno: "H. Zambrano",   monto: 3240, vence: "2026-09-29", closer: "Camilo Estrada", estado: "por-cobrar" },
   ],
 
-  /* ── 7 · Las últimas llamadas ─────────────────────────────────────────────
+  /* ── 8 · Las últimas llamadas ─────────────────────────────────────────────
      situacion: "Adentro en llamada" · "Adentro en seguimiento" · "No cerró"
                 · "Reagendado" · "No se presentó" · "Pendiente"
      Un cierre es una situación "Adentro …", no un monto.                    */

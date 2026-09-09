@@ -41,6 +41,12 @@ Dentro de `index.html`, el JS está numerado por bloques y en este orden:
 por `history.pushState`, porque el panel se abre con `file://` y ahí `pushState` tira `SecurityError`.
 Al cambiar de página se vuelve a disparar la animación de entrada de esa página.
 
+**El pipeline** (`datos.js` → `pipeline` + `pipelineEtapas`) es una **foto del estado de hoy**, como
+las cuotas: no suma con los meses ni con las llamadas y no hay que intentar cuadrarlo con ellos. El
+número que se muestra grande es el **ponderado** por la probabilidad de cada etapa, no el bruto: un
+pipeline de $83k del que la mitad son llamadas que todavía no ocurrieron no vale $83k. El orden de
+`pipelineEtapas` es el que dibuja las columnas.
+
 **Los reels** (`datos.js` → `reels`) traen métricas reales de Instagram más la atribución de
 negocio. **Las miniaturas son archivos locales en `miniaturas/<shortcode>.jpg`**: nunca referencies
 la `thumbnail_url` de Instagram, caduca a los pocos días y las tarjetas quedan en blanco. Para

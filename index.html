@@ -412,6 +412,40 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
 .chip.n{color:var(--muted-fg);background:var(--muted)}
 .chip.v{color:var(--c1);background:oklch(.68 .22 280/.13)}
 
+/* ── pipeline (kanban) ──────────────────────────────────────────────────────
+   Columnas de ancho fijo con scroll horizontal propio: en un tablero de
+   oportunidades, apretar las columnas para que entren todas hace que ninguna
+   se lea. Se scrollea, como en cualquier CRM. */
+.kan-wrap{overflow-x:auto;scrollbar-width:thin;padding-bottom:6px}
+.kan{display:flex;gap:12px;min-width:min-content}
+.kan-col{flex:0 0 228px;display:flex;flex-direction:column;
+  background:oklch(.155 .015 270/.6);border:1px solid var(--border);
+  border-radius:calc(var(--radius) + 2px)}
+.kan-h{padding:13px 14px 11px;border-bottom:1px solid var(--border)}
+.kan-t{display:flex;align-items:center;gap:8px;font:600 12.5px/1 var(--sans)}
+.kan-t .cnt{margin-left:auto;font:600 11px/1 var(--mono);color:var(--muted-fg);
+  background:var(--muted);border-radius:99px;padding:4px 8px;font-variant-numeric:tabular-nums}
+.kan-v{margin-top:9px;font:650 17px/1 var(--mono);letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.kan-p{margin-top:6px;font:500 10px/1.45 var(--mono);color:var(--muted-fg);letter-spacing:.01em}
+.kan-riel{height:3px;border-radius:99px;background:var(--muted);overflow:hidden;margin-top:10px}
+.kan-fill{height:100%;border-radius:99px;width:0;transition:width .8s var(--e)}
+.kan-b{padding:10px;display:flex;flex-direction:column;gap:9px;flex:1}
+.op{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 12px;
+  box-shadow:var(--sh-sm);transition:transform .18s var(--e),border-color .18s var(--e)}
+.op:hover{transform:translateY(-2px);border-color:oklch(.36 .02 270)}
+.op.fria{border-color:oklch(.65 .22 25/.42);background:oklch(.65 .22 25/.05)}
+.op-h{display:flex;align-items:baseline;gap:8px;margin-bottom:7px}
+.op-l{font:600 12.5px/1.2 var(--sans);letter-spacing:-.01em}
+.op-m{margin-left:auto;font:650 13px/1 var(--mono);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.op-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:8px}
+.op-av{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;flex:0 0 19px;
+  font:700 8px/1 var(--mono);color:oklch(.14 .01 270)}
+.op-c{font:500 10.5px/1 var(--mono);color:var(--muted-fg)}
+.op-d{margin-left:auto;font:600 10px/1 var(--mono);padding:3px 6px;border-radius:5px;
+  background:var(--muted);color:var(--muted-fg);font-variant-numeric:tabular-nums}
+.op.fria .op-d{background:oklch(.65 .22 25/.16);color:var(--bad)}
+.op-p{font-size:11.5px;line-height:1.45;color:var(--muted-fg)}
+
 /* ── acciones del día y atajos ──────────────────────────────────────────── */
 .acciones{display:grid;gap:13px;grid-template-columns:repeat(auto-fit,minmax(268px,1fr))}
 .accion{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--border);
@@ -545,6 +579,8 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     <div class="card" id="cardEmbudo"></div>
   </section>
 </div>
+
+<div class="pagina" id="p-pipeline"></div>
 
 <div class="pagina" id="p-anio">
 <section class="rise" id="s-anio">
@@ -1479,6 +1515,7 @@ document.getElementById("pieDoc").innerHTML =
       {id:"s-embudo",     n:"El embudo",       ico:"target"},
     ]},
     {g:"Ventas", items:[
+      {id:"s-pipeline",   n:"Pipeline",          ico:"target"},
       {id:"s-anio",       n:"Cómo viene el año", ico:"file"},
       {id:"s-equipo",     n:"El equipo",         ico:"users"},
       {id:"s-llamadas",   n:"Últimas llamadas",  ico:"phone"},
@@ -1500,6 +1537,7 @@ document.getElementById("pieDoc").innerHTML =
     "s-llamadas":  () => D.llamadas.length,
     "s-fuentes":   () => miles(D.fuentes.reduce((s,f) => s+f.leads, 0)),
     "s-contenido": () => miles(D.contenido.reduce((s,x) => s+x.piezas, 0)),
+    "s-pipeline":  () => moneyK((D.pipeline||[]).reduce((s,o) => s+o.monto, 0)),
     "s-cobranzas": () => moneyK(CU.porCobrar + CU.vencido),
     "s-proyeccion":() => "",
     "s-resumen":   c => moneyK(c.act.cobrado),
@@ -1887,6 +1925,92 @@ const A3 = derivar(agregar(u3)), A3ant = derivar(agregar(u3ant));
       })));
 })();
 
+/* ── PIPELINE ──────────────────────────────────────────────────────────────
+   Foto del estado de HOY, no de un período: por eso no suma con los meses ni
+   con las llamadas. El número que manda no es el valor bruto sino el
+   ponderado por la probabilidad de cada etapa — "tengo $83k en pipeline" no
+   dice nada si la mitad son llamadas que todavía no ocurrieron. */
+const PIPE = (function pipeline(){
+  const P = D.pipeline || [], ET = D.pipelineEtapas || [];
+  if (!P.length || !ET.length){ const h = document.getElementById("p-pipeline"); if (h) h.remove(); return null; }
+  const FRIO = 7;
+  const probDe = n => (ET.filter(e => e.nombre === n)[0] || {prob:0}).prob;
+  const bruto = P.reduce((s,o) => s + o.monto, 0);
+  const pond  = P.reduce((s,o) => s + o.monto * probDe(o.etapa)/100, 0);
+  const frias = P.filter(o => o.dias > FRIO);
+  const porEtapa = ET.map(e => {
+    const ops = P.filter(o => o.etapa === e.nombre).sort((a,b) => b.monto - a.monto);
+    return {e, ops, total: ops.reduce((s,o) => s + o.monto, 0)};
+  });
+  const maxCol = Math.max.apply(null, porEtapa.map(c => c.total)) || 1;
+
+  secc("pipeline", "El pipeline de hoy",
+    "<b>" + P.length + "</b> oportunidades abiertas por <b>" + money(bruto) + "</b>. Ponderado por la "
+    + "probabilidad de cada etapa son <b>" + money(pond) + "</b> — eso es lo que razonablemente entra, "
+    + "no los " + money(bruto) + "."
+    + (frias.length ? " <b>" + frias.length + "</b> están paradas hace más de " + FRIO + " días." : ""),
+    "Estado de hoy",
+    '<div class="kan-wrap"><div class="kan">'
+    + porEtapa.map((c,i) =>
+        '<div class="kan-col"><div class="kan-h">'
+        + '<div class="kan-t">'+c.e.nombre+'<span class="cnt">'+c.ops.length+"</span></div>"
+        + '<div class="kan-v">'+money(c.total)+"</div>"
+        + '<div class="kan-p">'+c.e.prob+"% de probabilidad · "+money(c.total*c.e.prob/100)+" ponderado</div>"
+        + '<div class="kan-riel"><div class="kan-fill" data-w="'+(c.total/maxCol*100).toFixed(1)
+          + '%" style="background:'+PAL[i % PAL.length]+';transition-delay:'+(i*80)+'ms"></div></div>'
+        + "</div><div class=\"kan-b\">"
+        + (c.ops.length ? c.ops.map(o =>
+            '<article class="op'+(o.dias > FRIO ? " fria" : "")+'">'
+            + '<div class="op-h"><span class="op-l">'+esc(o.lead)+'</span>'
+              + '<span class="op-m">'+money(o.monto)+"</span></div>"
+            + '<div class="op-meta">'
+              + '<span class="op-av" style="background:'+colorNombre(o.closer)+'">'+iniciales(o.closer)+"</span>"
+              + '<span class="op-c">'+esc(o.closer.split(" ")[0])+"</span>"
+              + '<span class="op-d">'+(o.dias === 0 ? "hoy" : o.dias + "d")+"</span></div>"
+            + '<p class="op-p">'+esc(o.prox)+"</p></article>").join("")
+          : '<p class="op-p" style="padding:14px 4px;text-align:center">Ninguna</p>')
+        + "</div></div>").join("")
+    + "</div></div>");
+
+  /* qué hacer con esto: lo frío y lo que está por caer */
+  const cierraYa = P.filter(o => probDe(o.etapa) >= 60).sort((a,b) => b.monto - a.monto);
+  secc("pipeline", "Lo que hay que mover", "", "Estado de hoy",
+    '<div class="g3">'
+    + mini(money(pond), "Valor ponderado del pipeline", "var(--c1)")
+    + mini(money(cierraYa.reduce((s,o) => s+o.monto, 0)),
+        cierraYa.length + " en propuesta o seguimiento — lo que está por caer", "var(--ok)")
+    + mini(frias.length ? money(frias.reduce((s,o) => s+o.monto, 0)) : "todo al día",
+        frias.length ? frias.length + " oportunidades paradas hace más de " + FRIO + " días" : "Nada frenado",
+        frias.length ? "var(--bad)" : "var(--ok)")
+    + mini(money(bruto / P.length), "Ticket promedio de lo abierto")
+    + mini((P.reduce((s,o) => s+o.dias, 0) / P.length).toFixed(1).replace(".",",") + " días",
+        "Antigüedad promedio en la etapa actual")
+    + mini(pct(pond / D.marca.metaMensual * 100, 0),
+        "Del objetivo mensual de " + moneyK(D.marca.metaMensual) + ", cubierto por el pipeline",
+        pond >= D.marca.metaMensual ? "var(--ok)" : "var(--warn)")
+    + "</div>");
+
+  /* por closer: quién tiene la carga y quién la tiene parada */
+  const porCloser = {};
+  P.forEach(o => { const c = porCloser[o.closer] = porCloser[o.closer] || {n:0, m:0, pond:0, frias:0};
+    c.n++; c.m += o.monto; c.pond += o.monto * probDe(o.etapa)/100; if (o.dias > FRIO) c.frias++; });
+  const PC = Object.keys(porCloser).map(k => Object.assign({k}, porCloser[k]))
+    .sort((a,b) => b.pond - a.pond);
+  secc("pipeline", "Quién tiene qué",
+    "La carga repartida. Un closer con mucho abierto y poco ponderado tiene oportunidades estancadas arriba del embudo.",
+    "Estado de hoy",
+    tabla([{t:"Closer"},{t:"Oportunidades",num:1},{t:"Valor abierto",num:1},{t:"Ponderado",num:1},
+           {t:"Frías",num:1},{t:"Ticket promedio",num:1}],
+      PC.map(c => [
+        '<span class="av" style="background:'+colorNombre(c.k)+';width:24px;height:24px;font-size:10px;display:inline-grid;vertical-align:-7px;margin-right:8px">'
+          + iniciales(c.k)+"</span>"+c.k,
+        c.n, money(c.m), "<b>"+money(c.pond)+"</b>",
+        c.frias ? '<span class="chip bad">'+c.frias+"</span>" : '<span class="chip ok">0</span>',
+        money(c.m/c.n)])));
+
+  return {bruto, pond, frias:frias.length, n:P.length};
+})();
+
 /* ── RESUMEN DEL MES ───────────────────────────────────────────────────── */
 (function masResumen(){
   const meta = D.marca.metaMensual, ult = M[M.length-1];
@@ -1906,6 +2030,10 @@ const A3 = derivar(agregar(u3)), A3ant = derivar(agregar(u3ant));
       + (vencidas.length>3 ? " y "+(vencidas.length-3)+" más" : "")
       + ". Es plata ya vendida, no hace falta vender nada nuevo.",
     ir:"s-cobranzas", cta:"Ver cobranzas"});
+  if (PIPE && PIPE.frias) ACC.push({
+    ico:"target", est:"y", t:PIPE.frias+" oportunidades frenadas",
+    d:"Están hace más de una semana en la misma etapa. En un pipeline, quieto es igual a perdido.",
+    ir:"s-pipeline", cta:"Ver pipeline"});
   if (pend.length) ACC.push({
     ico:"phone", est:"y", t:pend.length+" llamadas sin resolver",
     d:"Quedaron en <i>pendiente</i> o <i>reagendado</i>. Cada día que pasa la agenda se enfría.",
@@ -1940,6 +2068,8 @@ const A3 = derivar(agregar(u3)), A3ant = derivar(agregar(u3ant));
   const RES = [
     {ir:"s-embudo",     t:"El embudo",        v:pct(A3.cierres/A3.leads*100,2),
      d:"de conversación a venta · "+miles(A3.leads)+" leads en 90 días"},
+    {ir:"s-pipeline",   t:"Pipeline",         v:PIPE ? money(PIPE.pond) : "—",
+     d:PIPE ? "ponderado · "+PIPE.n+" oportunidades por "+money(PIPE.bruto) : ""},
     {ir:"s-anio",       t:"Cómo viene el año", v:money(anio12.cobrado),
      d:"cobrado en 12 meses · promedio "+money(anio12.cobrado/12)+" por mes"},
     {ir:"s-equipo",     t:"El equipo",        v:cl.nombre,

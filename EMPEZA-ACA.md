@@ -95,6 +95,7 @@ un desastre al lado de uno de 31.
 | "agregá una métrica" | `pintarKpis`: sumás una `tarjeta({...})` al array |
 | "cambiá el color" | `index.html` → `:root`, las variables `--primary` `--c1` `--s1` |
 | "quiero mostrar otro período" | ya está: el selector de arriba tiene mes en curso, mes pasado, 90 días y 12 meses |
+| "sumá una oportunidad al pipeline" | `datos.js` → `pipeline`. La `etapa` tiene que ser una de las de `pipelineEtapas` o la tarjeta no aparece en ninguna columna |
 | "cambiá los reels" o "sumá el reel nuevo" | `datos.js` → `reels`, **y** bajá la miniatura a `miniaturas/<shortcode>.jpg` (recorte 9:16, 240×427). No uses el link de la imagen de Instagram: caduca en días |
 | "agregá una página" | el `<div class="pagina">` en el HTML **y** el item en `GRUPOS` (bloque 12). En los dos lados o no aparece |
 
