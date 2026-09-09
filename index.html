@@ -328,6 +328,51 @@ h2{font:600 18px/1.25 var(--sans);letter-spacing:-.024em;margin:0}
 .li .v{font:600 13px/1 var(--mono);letter-spacing:-.02em}
 .li .p{font:500 11.5px/1 var(--mono);color:var(--muted-fg);min-width:46px;text-align:right}
 
+/* ── páginas ────────────────────────────────────────────────────────────────
+   Un archivo, varias páginas: el router por hash muestra una sola y esconde el
+   resto. La animación de entrada se vuelve a disparar en cada cambio, así que
+   cada página se siente como una carga. */
+.pagina{display:none}
+.pagina.act{display:block}
+.pagina>section:first-child{margin-top:26px}
+
+/* ── reels ──────────────────────────────────────────────────────────────── */
+.reels{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(196px,1fr))}
+.reel{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--border);
+  border-radius:calc(var(--radius) + 2px);box-shadow:var(--sh-sm);display:flex;flex-direction:column;
+  transition:transform .22s var(--e),box-shadow .22s var(--e),border-color .22s var(--e)}
+.reel:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);border-color:oklch(.34 .02 270)}
+.reel.top{border-color:oklch(.68 .22 280/.5)}
+.reel-mini{position:relative;aspect-ratio:9/16;overflow:hidden;background:var(--muted)}
+.reel-mini img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .5s var(--e);opacity:0}
+.reel-mini img.ok{opacity:1}
+.reel:hover .reel-mini img{transform:scale(1.05)}
+.reel-mini::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(to top,oklch(.13 .015 270) 2%,oklch(.13 .015 270/.72) 26%,transparent 56%)}
+.reel-sobre{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:11px 12px 12px}
+.reel-plata{font:650 21px/1 var(--mono);letter-spacing:-.04em;font-variant-numeric:tabular-nums;
+  display:block;margin-bottom:3px}
+.reel-plata.cero{font-size:14px;color:var(--muted-fg);letter-spacing:0;font-weight:500}
+.reel-sub{font:500 11px/1.3 var(--mono);color:oklch(.80 .01 270);font-variant-numeric:tabular-nums}
+.reel-cta{position:absolute;top:9px;left:9px;z-index:2;
+  font:700 9.5px/1 var(--mono);letter-spacing:.09em;padding:5px 8px;border-radius:6px;
+  background:oklch(.68 .22 280/.92);color:oklch(.99 0 0);box-shadow:0 2px 10px oklch(0 0 0/.4)}
+.reel-cta.sin{background:oklch(.22 .015 270/.9);color:var(--muted-fg)}
+.reel-medalla{position:absolute;top:9px;right:9px;z-index:2;
+  font:700 9.5px/1 var(--mono);letter-spacing:.06em;padding:5px 8px;border-radius:6px;
+  background:oklch(.99 0 0/.94);color:oklch(.15 .015 270);box-shadow:0 2px 10px oklch(0 0 0/.4)}
+.reel-b{padding:12px 13px 13px;display:flex;flex-direction:column;gap:8px;flex:1}
+.reel-t{font:550 12.5px/1.4 var(--sans);display:-webkit-box;-webkit-line-clamp:2;
+  -webkit-box-orient:vertical;overflow:hidden}
+.reel-m{display:flex;gap:12px;margin-top:auto;font:500 11px/1 var(--mono);color:var(--muted-fg);
+  font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.reel-m span{display:inline-flex;align-items:center;gap:4px}
+.reel-m svg{width:11px;height:11px;opacity:.75}
+.reel-riel{height:4px;border-radius:99px;background:var(--muted);overflow:hidden}
+.reel-fill{height:100%;border-radius:99px;width:0;transition:width .8s var(--e);
+  background:linear-gradient(90deg,var(--c1),oklch(.74 .2 292))}
+
 /* ── grids ──────────────────────────────────────────────────────────────── */
 .g2{display:grid;gap:14px;grid-template-columns:1fr 1fr}
 .g3{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
@@ -415,6 +460,7 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
 <div class="wrap">
 
   <header class="top">
+    <span class="marca"><span class="pip"></span> <span id="tPagina">Resumen del mes</span></span>
     <h1 id="tTitulo">Cargando…</h1>
     <p class="lead" id="tLead"></p>
     <div class="sellos" id="tSellos"></div>
@@ -428,12 +474,14 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     </div>
   </header>
 
-  <section class="rise" id="s-resumen">
+  <div class="pagina" id="p-resumen">
+<section class="rise" id="s-resumen">
     <div class="card hero" id="hero"></div>
     <div class="kpis" id="kpis"></div>
   </section>
+</div>
 
-  
+<div class="pagina" id="p-embudo">
 <section class="rise" id="s-embudo">
     <div class="sec-h">
       <div>
@@ -444,8 +492,9 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     </div>
     <div class="card" id="cardEmbudo"></div>
   </section>
+</div>
 
-  
+<div class="pagina" id="p-anio">
 <section class="rise" id="s-anio">
     <div class="sec-h">
       <div>
@@ -473,8 +522,9 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
       </div>
     </div></div>
   </section>
+</div>
 
-  
+<div class="pagina" id="p-equipo">
 <section class="rise" id="s-equipo">
     <div class="sec-h">
       <div>
@@ -496,8 +546,9 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
       </div></div>
     </div>
   </section>
+</div>
 
-  
+<div class="pagina" id="p-llamadas">
 <section class="rise" id="s-llamadas">
     <div class="sec-h">
       <div>
@@ -507,6 +558,9 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     </div>
     <div class="tabla-wrap"><table id="tablaLlamadas"></table></div>
   </section>
+</div>
+
+<div class="pagina" id="p-fuentes">
 <section class="rise" id="s-fuentes">
     <div class="sec-h">
       <div>
@@ -522,8 +576,9 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
       </div>
     </div></div>
   </section>
+</div>
 
-  
+<div class="pagina" id="p-contenido">
 <section class="rise" id="s-contenido">
     <div class="sec-h">
       <div>
@@ -535,7 +590,19 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     <div class="g3" id="contenido"></div>
   </section>
 
-  
+  <section class="rise">
+    <div class="sec-h">
+      <div>
+        <h2>Reel por reel, qué trajo cada uno</h2>
+        <p class="titular" id="tReels"></p>
+      </div>
+      <span class="marca-per">Ordenados por lo cobrado</span>
+    </div>
+    <div class="reels" id="reels"></div>
+  </section>
+</div>
+
+<div class="pagina" id="p-cobranzas">
 <section class="rise" id="s-cobranzas">
     <div class="sec-h">
       <div>
@@ -547,8 +614,9 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     <div class="g3" id="miniCuotas" style="margin-bottom:14px"></div>
     <div class="tabla-wrap"><table id="tablaCuotas"></table></div>
   </section>
+</div>
 
-  
+<div class="pagina" id="p-proyeccion">
 <section class="rise" id="s-proyeccion">
     <div class="sec-h">
       <div>
@@ -567,6 +635,9 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
       </div>
     </div></div>
   </section>
+</div>
+
+
 
   
 
@@ -1182,6 +1253,50 @@ function fila(i, nombre, valor, sub, prop, color){
     + "</b>: <b>"+(mejor.agendas/mejor.piezas).toFixed(2).replace(".",",")+"</b> agendas por pieza publicada.";
 })();
 
+/* ══ 7b · los reels, uno por uno ══════════════════════════════════════════
+   Métricas de Instagram reales; leads/agendas/ventas son la atribución. La
+   tarjeta se ordena por lo COBRADO y no por views a propósito: ese orden es
+   todo el argumento de la sección. */
+(function reels(){
+  if (!D.reels || !D.reels.length) { document.getElementById("reels").closest("section").hidden = true; return; }
+  const R = D.reels.slice().sort((a,b) => b.cobrado - a.cobrado || b.leads - a.leads);
+  const maxPlata = R[0].cobrado || 1;
+  const ojo = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const chat = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/></svg>';
+  document.getElementById("reels").innerHTML = R.map((r,i) => {
+    const vende = r.cobrado > 0;
+    return '<article class="reel'+(i===0?" top":"")+'">'
+      + '<div class="reel-mini">'
+        + '<img src="miniaturas/'+esc(r.sc)+'.jpg" alt="" loading="lazy" '
+          + 'onload="this.classList.add(\'ok\')" onerror="this.remove()">'
+        + '<span class="reel-cta'+(r.cta?"":" sin")+'">'+(r.cta ? esc(r.cta) : "SIN CTA")+"</span>"
+        + (i===0 ? '<span class="reel-medalla">EL QUE MÁS VENDIÓ</span>' : "")
+        + '<div class="reel-sobre">'
+          + '<span class="reel-plata'+(vende?"":" cero")+'">'+(vende ? money(r.cobrado) : "no vendió")+"</span>"
+          + '<span class="reel-sub">'+(vende ? r.ventas + (r.ventas===1?" venta":" ventas") + " · " : "")
+            + r.leads + " leads · " + r.agendas + " agendas</span>"
+        + "</div>"
+      + "</div>"
+      + '<div class="reel-b">'
+        + '<p class="reel-t">'+esc(r.titulo)+"</p>"
+        + '<div class="reel-riel"><div class="reel-fill" data-w="'+(r.cobrado/maxPlata*100).toFixed(1)
+          + '%" style="transition-delay:'+(i*55)+'ms"></div></div>'
+        + '<div class="reel-m"><span>'+ojo+miles(r.views)+"</span><span>"+chat+miles(r.comentarios)+"</span>"
+          + "<span>"+r.fecha.split("-").reverse().slice(0,2).join("/")+"</span></div>"
+      + "</div></article>";
+  }).join("");
+
+  const masVisto = R.slice().sort((a,b) => b.views - a.views)[0], mejor = R[0];
+  const sinCta = R.filter(r => !r.cta), sinCtaVendio = sinCta.filter(r => r.cobrado > 0).length;
+  document.getElementById("tReels").innerHTML =
+    "El más visto fue <b>" + miles(masVisto.views) + "</b> views y dejó <b>"
+    + (masVisto.cobrado ? money(masVisto.cobrado) : "cero") + "</b>. El que más vendió tuvo <b>"
+    + miles(mejor.views) + "</b> — <b>" + Math.round(masVisto.views/mejor.views) + " veces menos</b> — y dejó <b>"
+    + money(mejor.cobrado) + "</b>."
+    + (sinCta.length && !sinCtaVendio
+        ? " Y los <b>" + sinCta.length + "</b> reels que no piden keyword no dejaron una sola venta." : "");
+})();
+
 /* ══ 8 · cobranzas ════════════════════════════════════════════════════════ */
 (function cuotas(){
   const ESTADO = {
@@ -1349,23 +1464,36 @@ document.getElementById("pieDoc").innerHTML =
         ? "datos de demostración" : "datos reales") + "</span>";
 
   const items = [].slice.call(document.querySelectorAll(".side-i"));
-  items.forEach(b => b.addEventListener("click", () => {
-    const s = document.getElementById(b.dataset.id);
-    if (s) s.scrollIntoView({behavior: REDUCIR ? "auto" : "smooth", block:"start"});
-  }));
-  /* scroll-spy: marca la sección cuya parte visible manda. Se recalcula en el
-     scroll y no con un observer por sección, porque con secciones de altura
-     muy distinta el observer prende dos a la vez. */
-  const marcar = () => {
-    const y = scrollY + innerHeight * .28;
-    let act = items[0] && items[0].dataset.id;
-    items.forEach(b => { const s = document.getElementById(b.dataset.id);
-      if (s && s.offsetTop <= y) act = b.dataset.id; });
-    items.forEach(b => b.classList.toggle("on", b.dataset.id === act));
-  };
-  addEventListener("scroll", marcar, {passive:true});
-  addEventListener("resize", marcar);
-  marcar();
+  const IDS = items.map(b => b.dataset.id);
+
+  /* ── el router ────────────────────────────────────────────────────────────
+     Una sola página visible por vez. Va por hash y no por history.pushState
+     porque el panel se abre con file:// y ahí pushState tira SecurityError. */
+  function ir(id, empujar){
+    if (IDS.indexOf(id) < 0) id = IDS[0];
+    document.querySelectorAll(".pagina").forEach(pg =>
+      pg.classList.toggle("act", pg.id === "p-" + id.slice(2)));
+    items.forEach(b => b.classList.toggle("on", b.dataset.id === id));
+    const pg = document.getElementById("p-" + id.slice(2));
+    if (pg){
+      /* se vuelve a disparar la entrada: cada página se siente como una carga */
+      pg.querySelectorAll("section.rise").forEach(s => {
+        s.classList.remove("in");
+        s.querySelectorAll(".bar-anim,.area-anim,.punto-anim,.ec-svg").forEach(e => e.classList.remove("in"));
+        s.querySelectorAll("[data-w]").forEach(e => e.style.width = 0);
+      });
+      requestAnimationFrame(() => {
+        pg.querySelectorAll("section.rise").forEach(s => { s.classList.add("in"); activar(s); });
+      });
+    }
+    if (empujar !== false) location.hash = "#/" + id.slice(2);
+    scrollTo({top:0, behavior: REDUCIR ? "auto" : "smooth"});
+    const it = items.find(b => b.dataset.id === id);
+    if (it) document.getElementById("tPagina").textContent = it.querySelector("span").textContent;
+  }
+  items.forEach(b => b.addEventListener("click", () => ir(b.dataset.id)));
+  addEventListener("hashchange", () => ir("s-" + location.hash.replace(/^#\/?/, ""), false));
+  window.__ir = ir;
   window.__cifras = c => items.forEach(b => {
     const f = CIFRA[b.dataset.id];
     b.querySelector(".n").textContent = f ? f(c) : "";
@@ -1383,12 +1511,8 @@ function pintarPeriodo(){
 selP.addEventListener("change", pintarPeriodo);
 pintarPeriodo();
 pintarAnio();
-document.querySelectorAll("section.rise").forEach(s => io.observe(s));
-/* la primera sección entra sí o sí, sin esperar al observer */
-requestAnimationFrame(() => {
-  const p = document.querySelector("section.rise");
-  p.classList.add("in"); activar(p);
-});
+/* abre la página del hash, o la primera */
+window.__ir("s-" + (location.hash.replace(/^#\/?/, "") || "resumen"), false);
 })();
 </script>
 </body>

@@ -83,9 +83,47 @@ const DATOS = {
 
   /* ── 5 · El contenido (últimos 90 días) ───────────────────────────────── */
   contenido: [
-    { formato: "Reels",     piezas: 34,  views: 412800, ctas: 21, leads: 386, agendas: 41 },
-    { formato: "Historias", piezas: 168, views: 89400,  ctas: 44, leads: 214, agendas: 29 },
-    { formato: "YouTube",   piezas: 6,   views: 38200,  ctas: 6,  leads: 97,  agendas: 18 },
+    { formato: "Reels",     piezas: 12,  views: 1144733, ctas: 9,  leads: 408, agendas: 59 },
+    { formato: "Historias", piezas: 168, views: 89400,   ctas: 44, leads: 216, agendas: 29 },
+    { formato: "YouTube",   piezas: 6,   views: 38200,   ctas: 6,  leads: 231, agendas: 39 },
+  ],
+
+  /* ── 8 · Los reels y lo que trajo cada uno ────────────────────────────────
+     Métricas de Instagram REALES (views, likes, comentarios, fecha) de
+     @alexmcarrera, bajadas el 9-sep-2026. Las columnas de negocio —leads,
+     agendas, ventas, cobrado— son la atribución: de dónde salió cada venta.
+
+     De dónde sale la atribución en la vida real: el reel pide una keyword,
+     ManyChat la recibe y etiqueta al lead, y esa etiqueta viaja hasta el CRM.
+     Sin esa cadena esta tabla no se puede llenar y es mejor no inventarla.
+
+     La miniatura es un archivo local en miniaturas/. NO se referencian las
+     URLs de Instagram: caducan a los pocos días y el panel quedaría en blanco. */
+  reels: [
+    { sc:"Da6mKvxhXPm", fecha:"2026-07-18", cta:"AGENCIA", seg:111, titulo:"AGENCIA",
+      views:751527, likes:1346, comentarios:224, leads:42, agendas:7,  ventas:1, cobrado:4900  },
+    { sc:"DcpfLaTt7Oj", fecha:"2026-08-30", cta:"GTA", seg:106, titulo:"Mi plan para hacer 100K/m en GTA 6",
+      views:140570, likes:4800, comentarios:1500, leads:88, agendas:12, ventas:2, cobrado:9800  },
+    { sc:"DceIGlKxrDt", fecha:"2026-08-25", cta:"IA", seg:10, titulo:"«10k/mes es muy difícil»",
+      views:101803, likes:2900, comentarios:488, leads:71, agendas:9,  ventas:1, cobrado:3200  },
+    { sc:"DcXMrJtNAg8", fecha:"2026-08-23", cta:"WEB", seg:42, titulo:"Esto es como Bitcoin en 2009",
+      views:45640,  likes:1100, comentarios:140, leads:54, agendas:8,  ventas:2, cobrado:9400  },
+    { sc:"Dc8zzVPhMSN", fecha:"2026-09-06", cta:"CLAUDE", seg:89, titulo:"Las 2 skills de Claude para contenido",
+      views:34615,  likes:336,  comentarios:47,  leads:39, agendas:6,  ventas:2, cobrado:9600  },
+    { sc:"Dc7BvmuxDgt", fecha:"2026-09-05", cta:"IA", seg:10, titulo:"7 industrias = 7 automatizaciones",
+      views:20810,  likes:503,  comentarios:99,  leads:31, agendas:4,  ventas:0, cobrado:0     },
+    { sc:"DDaIOF4tuYu", fecha:"2024-12-10", cta:"", seg:84, titulo:"Busca tu razón para seguir",
+      views:18740,  likes:472,  comentarios:28,  leads:3,  agendas:0,  ventas:0, cobrado:0     },
+    { sc:"DccVW4nt1yp", fecha:"2026-08-25", cta:"MARCA", seg:51, titulo:"Claude deja marcas invisibles",
+      views:9354,   likes:164,  comentarios:65,  leads:22, agendas:3,  ventas:1, cobrado:5600  },
+    { sc:"DcfKFR9tXAU", fecha:"2026-08-26", cta:"CLAUDE", seg:94, titulo:"El sistema de adquisición",
+      views:8629,   likes:169,  comentarios:117, leads:34, agendas:6,  ventas:3, cobrado:16800 },
+    { sc:"DchHZMoJ1Ae", fecha:"2026-08-26", cta:"", seg:144, titulo:"De editor a pagarle +30k USD",
+      views:7667,   likes:188,  comentarios:5,   leads:5,  agendas:1,  ventas:0, cobrado:0     },
+    { sc:"DcXa91ONp9A", fecha:"2026-08-23", cta:"TOTO", seg:127, titulo:"QEPD Editin",
+      views:3494,   likes:57,   comentarios:16,  leads:8,  agendas:1,  ventas:0, cobrado:0     },
+    { sc:"DdCybYZRqJS", fecha:"2026-09-08", cta:"FLEX", seg:121, titulo:"7000€ vendiendo IA en 40 días",
+      views:1884,   likes:27,   comentarios:11,  leads:11, agendas:2,  ventas:0, cobrado:0     },
   ],
 
   /* ── 6 · Las cuotas por cobrar (estado de HOY, no de un período) ──────────

@@ -36,6 +36,17 @@ Dentro de `index.html`, el JS está numerado por bloques y en este orden:
 | helpers de gráfico | `escala` `pathDe` `largoPath` `sparkline` `colorNombre` |
 | 1-13 | encabezado, hero, KPIs, año, embudo, equipo, fuentes, contenido, cobranzas, proyección, llamadas, pie, **sidebar**, arranque |
 
+**Son páginas, no una página larga.** Cada `<div class="pagina" id="p-xxx">` envuelve una o más
+`<section>`, y el router por hash (bloque 12, función `ir()`) muestra una sola. Va por hash y **no**
+por `history.pushState`, porque el panel se abre con `file://` y ahí `pushState` tira `SecurityError`.
+Al cambiar de página se vuelve a disparar la animación de entrada de esa página.
+
+**Los reels** (`datos.js` → `reels`) traen métricas reales de Instagram más la atribución de
+negocio. **Las miniaturas son archivos locales en `miniaturas/<shortcode>.jpg`**: nunca referencies
+la `thumbnail_url` de Instagram, caduca a los pocos días y las tarjetas quedan en blanco. Para
+actualizarlas: bajar el JPG, recortarlo 9:16, redimensionar a 240×427 y guardarlo con el shortcode
+de nombre.
+
 **La sidebar** se genera desde el array `GRUPOS` del bloque 12. Cada item apunta al `id` de una
 `<section class="rise">` y lleva una cifra viva que sale del mapa `CIFRA`. **El orden de la sidebar
 tiene que ser el orden real de las secciones en el HTML**: si no coincide, el usuario hace clic y el
