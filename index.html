@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>EXPOSURE · Panel del negocio</title>
 <!-- favicon inline: sin esto el navegador pide /favicon.ico y tira un 404 en la consola -->
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23221f3d'/%3E%3Cpath d='M7 22 L12 14 L17 18 L25 8' stroke='%238b7bf7' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23221f3d'/%3E%3Cellipse cx='16' cy='16' rx='11' ry='11.5' fill='%23fff'/%3E%3Cellipse cx='16' cy='16' rx='6.9' ry='4' transform='rotate(-37 16 16)' fill='%23221f3d'/%3E%3C/svg%3E">
 <style>
 /* ══════════════════════════════════════════════════════════════════════════
    EXPOSURE · Panel del negocio
@@ -45,7 +45,7 @@ body{
   background-size:22px 22px;
 }
 .wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px}
-.num,.kpi-n,.hero-n,.delta,td.num,.ejeY,.ejeX,.val,.f-n,.f-pct,.chip,.lb-v,.big{
+.num,.kpi-n,.hero-n,.delta,td.num,.ejeY,.ejeX,.val,.chip,.lb-v,.big{
   font-variant-numeric:tabular-nums;
 }
 
@@ -59,7 +59,18 @@ body{
 
 /* ── header ─────────────────────────────────────────────────────────────── */
 .top{padding:38px 0 4px}
-.marca{display:inline-flex;align-items:center;gap:9px;margin-bottom:14px;
+/* ── el wordmark ────────────────────────────────────────────────────────────
+   Reconstruido con tipografía del sistema: pesada, condensada con scaleX (que
+   funciona con cualquier fuente, a diferencia de font-stretch) y con la O
+   convertida en el diafragma del logo. Si el nombre de datos.js no tiene O,
+   se dibuja como texto y listo. */
+.logo{display:inline-flex;align-items:center;gap:.02em;
+  font:800 34px/1 var(--sans);letter-spacing:-.012em;color:var(--fg);
+  transform:scaleX(.88);transform-origin:left center}
+.logo .o{width:.83em;height:.83em;margin:0 .015em;flex:0 0 auto;position:relative;top:.005em}
+.logo sup{font:700 .3em/1 var(--sans);letter-spacing:.02em;align-self:flex-start;
+  margin-left:.12em;margin-top:.16em;opacity:.9}
+.marca{display:inline-flex;align-items:center;gap:9px;margin:11px 0 14px;
   font:600 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted-fg)}
 .marca .pip{width:7px;height:7px;border-radius:50%;background:var(--primary);
   box-shadow:0 0 0 3px oklch(.68 .22 280/.18)}
@@ -208,18 +219,40 @@ h2{font:600 18px/1.25 var(--sans);letter-spacing:-.024em;margin:0}
 .tip-r b{margin-left:auto;font:600 12.5px var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .scroll-hint{display:none;font:500 11px/1 var(--mono);color:var(--muted-fg);text-align:center;margin-bottom:8px}
 
-/* ── embudo ─────────────────────────────────────────────────────────────── */
-.funnel{display:flex;flex-direction:column;gap:12px}
-.f-row{display:grid;grid-template-columns:168px 1fr 52px 120px;align-items:center;gap:12px}
-.f-l{font:550 12.5px/1.3 var(--sans)}
-.f-bar{height:26px;background:var(--muted);border-radius:6px;overflow:hidden}
-.f-fill{height:100%;border-radius:6px;width:0;min-width:4px;
-  background:linear-gradient(90deg,var(--c1),oklch(.74 .2 292));
-  transition:width .75s var(--e)}
-.f-fill.bad{background:linear-gradient(90deg,var(--bad),oklch(.68 .2 35))}
-.f-n{font:620 13px/1 var(--mono);text-align:right;letter-spacing:-.02em}
-.f-pct{font:500 11.5px/1 var(--mono);color:var(--muted-fg);text-align:right;white-space:nowrap}
-.f-pct.bad{color:var(--bad)}
+/* ── embudo de cinta (el del CRM) ───────────────────────────────────────────
+   Tres cintas del mismo tono apiladas de afuera hacia adentro: la clara tapa
+   el centro y las oscuras quedan como bandas de borde. Es lo que le da el
+   volumen — con una sola cinta plana el efecto no aparece. */
+.ec-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+  padding:22px 24px 20px;border-bottom:1px solid var(--border)}
+.ec-num{font:650 40px/1 var(--mono);letter-spacing:-.045em;font-variant-numeric:tabular-nums}
+.ec-cap{margin:9px 0 0;font-size:13px;color:var(--muted-fg)}
+.ec-cap b{color:oklch(.84 .01 270);font-weight:600;font-variant-numeric:tabular-nums}
+.ec-trend{text-align:right;flex:0 0 auto}
+.ec-trend .delta{font-size:13px;padding:6px 9px}
+.ec-trend small{display:block;margin-top:6px;font:500 11px/1.3 var(--mono);color:var(--muted-fg)}
+.ec-body{position:relative}
+.ec-svg{position:absolute;inset:0;width:100%;height:100%;
+  clip-path:inset(0 100% 0 0);transition:clip-path 1.15s var(--e)}
+.ec-svg.in{clip-path:inset(0 0 0 0)}
+.ec-cols{position:relative;display:grid}
+.ec-col{display:flex;flex-direction:column;align-items:center;min-height:300px;padding:26px 8px 22px}
+.ec-col + .ec-col{border-left:1px solid var(--border)}
+.ec-v{font:650 23px/1 var(--mono);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.ec-mid{flex:1;display:flex;align-items:center}
+.ec-pill{background:var(--fg);color:oklch(.15 .015 270);border-radius:999px;
+  padding:7px 15px;font:650 13px/1 var(--mono);letter-spacing:-.02em;
+  box-shadow:0 6px 18px oklch(0 0 0/.45);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ec-lab{font-size:12.5px;color:var(--muted-fg);text-align:center;line-height:1.35}
+.ec-foot{display:flex;flex-wrap:wrap;gap:8px 10px;align-items:center;
+  padding:15px 20px;border-top:1px solid var(--border)}
+.ec-paso{display:inline-flex;align-items:baseline;gap:7px;font:500 11.5px/1 var(--sans);
+  background:var(--muted);border:1px solid var(--border);border-radius:8px;padding:8px 11px;
+  color:var(--muted-fg)}
+.ec-paso b{color:var(--fg);font:600 12.5px var(--mono);font-variant-numeric:tabular-nums}
+.ec-paso.mal{border-color:oklch(.65 .22 25/.4);background:oklch(.65 .22 25/.09)}
+.ec-paso.mal b{color:var(--bad)}
+.ec-paso i{font-style:normal;font-size:10.5px;opacity:.75}
 
 /* ── leaderboard ────────────────────────────────────────────────────────── */
 .lb{display:flex;flex-direction:column;gap:3px}
@@ -302,6 +335,7 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
 @media (max-width:640px){
   .wrap{padding:0 14px 60px}
   h1{font-size:26px}
+  .logo{font-size:25px}
   .hero{padding:18px 17px}
   .hero-n{font-size:36px;gap:10px}
   .hero-spark{height:70px}
@@ -314,11 +348,13 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
   .delta{padding:3px 5px;font-size:10.5px}
   section{margin-top:30px}
   .scroll-hint{display:block}
-  .f-row{grid-template-columns:104px 1fr 40px;grid-template-areas:"l bar n" "pct pct pct"}
-  .f-l{grid-area:l;font-size:11.5px}
-  .f-bar{grid-area:bar}
-  .f-n{grid-area:n}
-  .f-pct{grid-area:pct;text-align:left}
+  .ec-num{font-size:30px}
+  .ec-head{padding:17px 16px 15px}
+  .ec-col{min-height:200px;padding:16px 4px 14px}
+  .ec-v{font-size:15px}
+  .ec-pill{padding:5px 9px;font-size:11px}
+  .ec-lab{font-size:10.5px}
+  .ec-foot{padding:12px 14px;gap:6px}
   .lb-row{grid-template-columns:22px 30px 1fr 82px;gap:9px;padding:9px 6px}
 }
 </style>
@@ -327,7 +363,8 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
 <div class="wrap">
 
   <header class="top">
-    <span class="marca"><span class="pip"></span> <span id="mMarca">EXPOSURE</span> · <span id="mBajada">Panel del negocio</span></span>
+    <div id="logo"></div>
+    <span class="marca"><span class="pip"></span> <span id="mBajada">Panel del negocio</span></span>
     <h1 id="tTitulo">Cargando…</h1>
     <p class="lead" id="tLead"></p>
     <div class="sellos" id="tSellos"></div>
@@ -382,7 +419,7 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
       </div>
       <span class="marca-per" id="perEmbudo"></span>
     </div>
-    <div class="card"><div class="card-b"><div class="funnel" id="embudo"></div></div></div>
+    <div class="card" id="cardEmbudo"></div>
   </section>
 
   <section class="rise">
@@ -504,6 +541,7 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
 const D = DATOS, M = D.meses, MON = D.marca.moneda || "$";
 
 /* ══ formato ══════════════════════════════════════════════════════════════ */
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const miles = n => Math.round(n).toLocaleString("es-AR");
 const money = n => MON + miles(n);
 const moneyK = n => Math.abs(n) >= 1000000 ? MON + (n/1000000).toFixed(1).replace(".",",") + "M"
@@ -617,12 +655,13 @@ function countUp(el, fin, fmt, ms){
 }
 function activar(raiz){
   requestAnimationFrame(() => requestAnimationFrame(() => {
-    raiz.querySelectorAll(".bar-anim,.area-anim,.punto-anim").forEach(e => e.classList.add("in"));
+    raiz.querySelectorAll(".bar-anim,.area-anim,.punto-anim,.ec-svg").forEach(e => e.classList.add("in"));
     raiz.querySelectorAll("[data-w]").forEach(e => e.style.width = e.dataset.w);
     raiz.querySelectorAll("[data-off]").forEach(e => e.style.strokeDashoffset = e.dataset.off);
     raiz.querySelectorAll("[data-cu]").forEach(e => {
       const f = e.dataset.fmt;
       countUp(e, +e.dataset.cu, f === "money" ? money : f === "pct" ? (n => pct(n)) :
+        f === "pct2" ? (n => pct(n,2)) :
         f === "x" ? (n => n.toFixed(1).replace(".",",") + ":1") : miles, +e.dataset.ms || 950);
     });
   }));
@@ -706,7 +745,21 @@ function colorNombre(n){ let h = 0; for (const c of n) h = (h * 31 + c.charCodeA
 /* ══ 1 · encabezado ═══════════════════════════════════════════════════════ */
 const anio12 = derivar(agregar(M));
 const ultimo = M[M.length-1], anterior = M[M.length-2];
-document.getElementById("mMarca").textContent   = D.marca.nombre;
+/* la O del logo: anillo lleno con el contador elíptico inclinado, como el
+   diafragma de una cámara. El interior se pinta del color del fondo, así que
+   acompaña al tema sin recortes. */
+const O_SVG = '<svg class="o" viewBox="0 0 100 100" aria-hidden="true">'
+  + '<ellipse cx="50" cy="50" rx="48" ry="49.5" fill="currentColor"/>'
+  + '<ellipse cx="50" cy="50" rx="33" ry="19.5" transform="rotate(-37 50 50)" fill="var(--bg)"/>'
+  + "</svg>";
+(function wordmark(){
+  const n = D.marca.nombre.toUpperCase();
+  const i = n.indexOf("O");
+  const html = i < 0 ? esc(n) : esc(n.slice(0,i)) + O_SVG + esc(n.slice(i+1));
+  document.getElementById("logo").innerHTML =
+    '<span class="logo" role="img" aria-label="' + esc(D.marca.nombre) + '">'
+    + html + "<sup>&#8482;</sup></span>";
+})();
 document.getElementById("mBajada").textContent  = D.marca.bajada;
 document.title = D.marca.nombre + " · " + D.marca.bajada;
 document.getElementById("tTitulo").textContent  = mesLargo(ultimo.mes).replace(/^./, c => c.toUpperCase());
@@ -909,26 +962,86 @@ function pintarEmbudo(c){
     const brecha = p.vara - r;
     if (brecha > peorBrecha) { peorBrecha = brecha; peor = i; }
   });
-  document.getElementById("embudo").innerHTML = pasos.map((p,i) => {
-    const conv = i ? p.v / pasos[i-1].v * 100 : 100, mala = i === peor;
-    return '<div class="f-row"><span class="f-l">'+p.l+"</span>"
-      + '<div class="f-bar"><div class="f-fill'+(mala?" bad":"")+'" data-w="'+(p.v/max*100).toFixed(1)+'%" style="transition-delay:'+(i*90)+'ms"></div></div>'
-      + '<span class="f-n">'+miles(p.v)+"</span>"
-      + '<span class="f-pct'+(mala?" bad":"")+'">'+(i ? pct(conv) + " " + p.nota : "punto de partida")+"</span></div>";
-  }).join("");
+  /* ── la cinta ────────────────────────────────────────────────────────────
+     Mismo algoritmo que el embudo del CRM: anclas en el borde izquierdo, en el
+     centro de cada columna y en el borde derecho (los tramos planos de las
+     puntas hacen que la cinta entre y salga limpia), unidas con bezier cúbicas
+     cuyo punto de control está en el medio de cada tramo. Tres capas con la
+     misma forma a distinta escala. */
+  const W = 1000, H = 600, cy = H/2, medio = H*0.4;
+  const primero = pasos[0].v || 1, ultimo = pasos[pasos.length-1].v;
+  const colW = W / pasos.length;
+  const anclas = [{x:0, v:primero}]
+    .concat(pasos.map((p,i) => ({x:(i+.5)*colW, v:p.v})))
+    .concat([{x:W, v:ultimo}]);
+  const cinta = escala => {
+    /* piso de 1.5px: con una conversión de 2% el último tramo desaparece y la
+       cinta parece cortada en vez de finita. */
+    const pts = anclas.map(a => ({x:a.x, h: Math.max(1.5, a.v/primero * medio * escala)}));
+    let d = "M " + pts[0].x + " " + (cy - pts[0].h).toFixed(1);
+    for (let i = 1; i < pts.length; i++){
+      const cx = (pts[i-1].x + pts[i].x) / 2;
+      d += " C "+cx.toFixed(1)+" "+(cy-pts[i-1].h).toFixed(1)+" "+cx.toFixed(1)+" "+(cy-pts[i].h).toFixed(1)
+         + " "+pts[i].x.toFixed(1)+" "+(cy-pts[i].h).toFixed(1);
+    }
+    d += " L " + pts[pts.length-1].x + " " + (cy + pts[pts.length-1].h).toFixed(1);
+    for (let i = pts.length-1; i > 0; i--){
+      const cx = (pts[i].x + pts[i-1].x) / 2;
+      d += " C "+cx.toFixed(1)+" "+(cy+pts[i].h).toFixed(1)+" "+cx.toFixed(1)+" "+(cy+pts[i-1].h).toFixed(1)
+         + " "+pts[i-1].x.toFixed(1)+" "+(cy+pts[i-1].h).toFixed(1);
+    }
+    return d + " Z";
+  };
+  const CAPAS = [
+    {e:1,    f:"oklch(.26 .07 282)"},   /* banda externa — solo se ve el borde */
+    {e:.84,  f:"oklch(.44 .14 282)"},
+    {e:.60,  f:"oklch(.71 .21 285)"},   /* la cinta que se lee */
+  ];
+  const convTotal = a.leads ? a.cierres / a.leads * 100 : 0;
+  const convPrev  = c.cmp && c.cmp.leads ? c.cmp.cierres / c.cmp.leads * 100 : null;
+  const dTot = convPrev == null ? null : convTotal - convPrev;
+
+  document.getElementById("cardEmbudo").innerHTML =
+      '<div class="ec-head"><div>'
+    + '<div class="ec-num" data-cu="'+convTotal+'" data-fmt="pct2">0%</div>'
+    + '<p class="ec-cap"><b>'+miles(a.cierres)+"</b> ventas de <b>"+miles(a.leads)+"</b> conversaciones iniciadas</p>"
+    + "</div>"
+    + (dTot == null ? "" : '<div class="ec-trend"><span class="delta '+(Math.abs(dTot)<.005?"flat":dTot>=0?"up":"down")+'">'
+        + ico(dTot>=0?"up":"down") + (dTot>=0?"+":"−") + Math.abs(dTot).toFixed(2).replace(".",",") + " pts</span>"
+        + "<small>contra el período anterior</small></div>")
+    + "</div>"
+    + '<div class="ec-body">'
+      + '<svg class="ec-svg" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" aria-hidden="true">'
+      + CAPAS.map(c2 => '<path d="'+cinta(c2.e)+'" fill="'+c2.f+'"/>').join("")
+      + "</svg>"
+      + '<div class="ec-cols" style="grid-template-columns:repeat('+pasos.length+',1fr)">'
+      + pasos.map((p,i) => '<div class="ec-col">'
+          + '<span class="ec-v" data-cu="'+p.v+'">0</span>'
+          + '<span class="ec-mid"><span class="ec-pill">'+pct(p.v/primero*100, p.v/primero*100 < 10 ? 1 : 0)+"</span></span>"
+          + '<span class="ec-lab">'+p.l+"</span></div>").join("")
+      + "</div></div>"
+    + '<div class="ec-foot">'
+      + pasos.slice(1).map((p,i) => {
+          const conv = p.v / pasos[i].v * 100, mala = (i+1) === peor;
+          return '<span class="ec-paso'+(mala?" mal":"")+'"><b>'+pct(conv)+"</b> "+p.nota
+               + " <i>vara "+p.vara+"%</i></span>";
+        }).join("")
+    + "</div>";
   document.getElementById("perEmbudo").textContent = PERIODOS.find(x => x.id === c.id).nom;
   const enc = pasos[peor];
-  document.getElementById("tEmbudo").innerHTML =
-    "De <b>"+miles(a.leads)+"</b> conversaciones salieron <b>"+a.cierres+"</b> ventas ("
-    + pct(a.cierres/a.leads*100,2) + "). "
-    + (peor < 0
-        ? "Todos los pasos están en su vara o por arriba."
-        : "El paso que más lejos está de su vara es <b>"+enc.nota+"</b>: "
-          + pct(enc.v/pasos[peor-1].v*100) + " contra un objetivo de " + enc.vara + "%. "
-          + "Llevarlo a la vara son <b>"
-          + miles(Math.round(pasos[peor-1].v * enc.vara/100 - enc.v)) + "</b> "
-          + (Math.round(pasos[peor-1].v * enc.vara/100 - enc.v) === 1
-              ? enc.l.toLowerCase().replace(/s$/,"") : enc.l.toLowerCase()) + " más.");
+  /* el titular NO repite lo que la card ya muestra (la conversión total y el
+     paso flojo): dice qué pasaría si ese paso llegara a su vara. */
+  if (peor < 0) {
+    document.getElementById("tEmbudo").innerHTML = "Todos los pasos están en su vara o por arriba.";
+  } else {
+    const faltan = Math.round(pasos[peor-1].v * enc.vara/100 - enc.v);
+    const plata  = enc.l === "Ventas" ? faltan * a.aov
+                 : Math.round(faltan * (a.cierres / pasos[peor].v) * a.aov);
+    document.getElementById("tEmbudo").innerHTML =
+      "Si <b>" + enc.nota + "</b> llegara a su vara del " + enc.vara + "%, el período cerraba con <b>"
+      + miles(faltan) + "</b> " + (faltan === 1 ? enc.l.toLowerCase().replace(/s$/,"") : enc.l.toLowerCase())
+      + " más" + (plata > 0 ? " — cerca de <b>" + money(plata) + "</b>" : "") + ".";
+  }
 }
 
 /* ══ 5 · equipo ═══════════════════════════════════════════════════════════ */
@@ -1135,7 +1248,7 @@ function pintarPeriodo(){
   const c = calc(selP.value);
   pintarHero(c); pintarKpis(c); pintarEmbudo(c);
   const sec = document.querySelector("section.rise");
-  activar(sec); activar(document.getElementById("embudo").closest("section"));
+  activar(sec); activar(document.getElementById("cardEmbudo").closest("section"));
 }
 selP.addEventListener("change", pintarPeriodo);
 pintarPeriodo();
