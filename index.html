@@ -950,10 +950,10 @@ function pintarEmbudo(c){
      a agendas siempre se cae más— sino el que está más lejos de SU vara. */
   const pasos = [
     {l:"Leads",              v:a.leads},
-    {l:"Agendas",            v:a.agendas,     nota:"tasa de agenda",  vara:12},
-    {l:"Se presentaron",     v:a.presentadas, nota:"show rate",       vara:68},
-    {l:"Calificadas",        v:a.calificadas, nota:"calificación",    vara:75},
-    {l:"Ventas",             v:a.cierres,     nota:"tasa de cierre",  vara:30},
+    {l:"Agendas",            v:a.agendas,     nota:"tasa de agenda",  art:"la", vara:12},
+    {l:"Se presentaron",     v:a.presentadas, nota:"show rate",       art:"el", vara:68},
+    {l:"Calificadas",        v:a.calificadas, nota:"calificación",    art:"la", vara:75},
+    {l:"Ventas",             v:a.cierres,     nota:"tasa de cierre",  art:"la", vara:30},
   ];
   const max = pasos[0].v || 1;
   let peor = -1, peorBrecha = 0;
@@ -1038,7 +1038,7 @@ function pintarEmbudo(c){
     const plata  = enc.l === "Ventas" ? faltan * a.aov
                  : Math.round(faltan * (a.cierres / pasos[peor].v) * a.aov);
     document.getElementById("tEmbudo").innerHTML =
-      "Si <b>" + enc.nota + "</b> llegara a su vara del " + enc.vara + "%, el período cerraba con <b>"
+      "Si " + enc.art + " <b>" + enc.nota + "</b> llegara a su vara del " + enc.vara + "%, el período cerraba con <b>"
       + miles(faltan) + "</b> " + (faltan === 1 ? enc.l.toLowerCase().replace(/s$/,"") : enc.l.toLowerCase())
       + " más" + (plata > 0 ? " — cerca de <b>" + money(plata) + "</b>" : "") + ".";
   }
