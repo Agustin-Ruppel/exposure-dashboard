@@ -292,6 +292,19 @@ h2{font:600 18px/1.25 var(--sans);letter-spacing:-.024em;margin:0}
 .ec-paso.mal b{color:var(--bad)}
 .ec-paso i{font-style:normal;font-size:10.5px;opacity:.75}
 
+/* ── barras horizontales genéricas (distribuciones) ─────────────────────── */
+.funnel-x{display:flex;flex-direction:column;gap:11px}
+.fx-row{display:grid;grid-template-columns:184px 1fr 42px 150px;align-items:center;gap:12px}
+.fx-l{font:550 12.5px/1.3 var(--sans)}
+.fx-bar{height:22px;background:var(--muted);border-radius:6px;overflow:hidden}
+.fx-fill{height:100%;border-radius:6px;width:0;min-width:3px;transition:width .7s var(--e);
+  background:linear-gradient(90deg,var(--c1),oklch(.74 .2 292))}
+.fx-fill.ok{background:linear-gradient(90deg,var(--ok),oklch(.79 .17 165))}
+.fx-fill.bad{background:linear-gradient(90deg,var(--bad),oklch(.68 .2 35))}
+.fx-n{font:620 13px/1 var(--mono);text-align:right;font-variant-numeric:tabular-nums}
+.fx-p{font:500 11.5px/1 var(--mono);color:var(--muted-fg);text-align:right;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+
 /* ── leaderboard ────────────────────────────────────────────────────────── */
 .lb{display:flex;flex-direction:column;gap:3px}
 .lb-row{display:grid;grid-template-columns:30px 34px 1fr 96px;align-items:center;gap:12px;
@@ -399,6 +412,41 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
 .chip.n{color:var(--muted-fg);background:var(--muted)}
 .chip.v{color:var(--c1);background:oklch(.68 .22 280/.13)}
 
+/* ── acciones del día y atajos ──────────────────────────────────────────── */
+.acciones{display:grid;gap:13px;grid-template-columns:repeat(auto-fit,minmax(268px,1fr))}
+.accion{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--border);
+  border-radius:calc(var(--radius) + 2px);padding:17px 18px 16px;box-shadow:var(--sh-sm);
+  display:flex;flex-direction:column}
+.accion::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:var(--border)}
+.accion.g::before{background:var(--ok)} .accion.y::before{background:var(--warn)}
+.accion.r::before{background:var(--bad)}
+.accion.g .ico-box{background:oklch(.75 .18 155/.15);color:var(--ok)}
+.accion.y .ico-box{background:oklch(.78 .15 70/.15);color:var(--warn)}
+.accion.r .ico-box{background:oklch(.65 .22 25/.15);color:var(--bad)}
+.acc-n{font:700 10px/1 var(--mono);letter-spacing:.1em;color:var(--muted-fg);margin-left:auto}
+.acc-t{margin:0 0 7px;font:650 16px/1.25 var(--sans);letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums}
+.accion p{margin:0;font-size:12.5px;line-height:1.6;color:var(--muted-fg)}
+.accion p b{color:oklch(.84 .01 270);font-weight:600;font-variant-numeric:tabular-nums}
+.acc-b{margin-top:auto;padding-top:0;align-self:flex-start;appearance:none;cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--muted);border:1px solid var(--border);border-radius:8px;
+  padding:8px 12px;font:600 11.5px/1 var(--sans);color:var(--fg);margin-top:14px;
+  transition:border-color .18s var(--e),background .18s var(--e)}
+.acc-b:hover{border-color:oklch(.36 .02 270);background:oklch(1 0 0/.05)}
+.acc-b svg{width:12px;height:12px;transition:transform .2s var(--e)}
+.acc-b:hover svg{transform:translateX(2px)}
+.atajos{gap:12px}
+.atajo{appearance:none;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:5px;
+  background:var(--card);border:1px solid var(--border);border-radius:calc(var(--radius) + 2px);
+  padding:15px 17px;box-shadow:var(--sh-sm);
+  transition:transform .2s var(--e),border-color .2s var(--e),box-shadow .2s var(--e)}
+.atajo:hover{transform:translateY(-2px);border-color:oklch(.68 .22 280/.4);box-shadow:var(--sh-md)}
+.atajo-t{font:600 10.5px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted-fg)}
+.atajo-v{font:650 20px/1.15 var(--mono);letter-spacing:-.035em;color:var(--fg);
+  font-variant-numeric:tabular-nums;margin:3px 0 1px}
+.atajo-d{font-size:11.5px;line-height:1.45;color:var(--muted-fg);font-variant-numeric:tabular-nums}
+
 /* ── mini stats ─────────────────────────────────────────────────────────── */
 .mini{display:flex;flex-direction:column;gap:5px;padding:15px 16px;
   background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
@@ -442,6 +490,10 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
   .ec-pill{padding:5px 9px;font-size:11px}
   .ec-lab{font-size:10.5px}
   .ec-foot{padding:12px 14px;gap:6px}
+  .fx-row{grid-template-columns:96px 1fr 34px;grid-template-areas:"l bar n" "p p p"}
+  .fx-l{grid-area:l;font-size:11px}
+  .fx-bar{grid-area:bar} .fx-n{grid-area:n}
+  .fx-p{grid-area:p;text-align:left}
   .lb-row{grid-template-columns:22px 30px 1fr 82px;gap:9px;padding:9px 6px}
 }
 </style>
@@ -1497,6 +1549,418 @@ document.getElementById("pieDoc").innerHTML =
   window.__cifras = c => items.forEach(b => {
     const f = CIFRA[b.dataset.id];
     b.querySelector(".n").textContent = f ? f(c) : "";
+  });
+})();
+
+/* ══ 12b · el resto de cada página ════════════════════════════════════════
+   Cada página tenía UNA sección y se leía como un recorte. Acá se agregan los
+   bloques que faltan, todos derivados de los mismos datos crudos. Se inyectan
+   desde JS para no duplicar marcado: `ir()` ya recorre las `section.rise` de
+   la página que abre, así que entran con la misma animación. */
+function secc(pag, titulo, titular, per, cuerpo){
+  const s = document.createElement("section");
+  s.className = "rise";
+  s.innerHTML = '<div class="sec-h"><div><h2>'+titulo+"</h2>"
+    + (titular ? '<p class="titular">'+titular+"</p>" : "") + "</div>"
+    + (per ? '<span class="marca-per">'+per+"</span>" : "") + "</div>" + cuerpo;
+  const host = document.getElementById("p-" + pag);
+  if (host) host.appendChild(s);
+  return s;
+}
+function tabla(cols, filas){
+  return '<div class="tabla-wrap"><table><thead><tr>'
+    + cols.map(c => "<th"+(c.num?' class="num"':"")+">"+c.t+"</th>").join("")
+    + "</tr></thead><tbody>"
+    + filas.map(f => "<tr>" + f.map((v,i) =>
+        "<td"+(cols[i].num?' class="num"':"")+">"+v+"</td>").join("") + "</tr>").join("")
+    + "</tbody></table></div>";
+}
+function mini(valor, label, color){
+  return '<div class="mini"><b'+(color?' style="color:'+color+'"':"")+'>'+valor+"</b><span>"+label+"</span></div>";
+}
+const u3 = M.slice(-3), u3ant = M.slice(-6,-3);
+const A3 = derivar(agregar(u3)), A3ant = derivar(agregar(u3ant));
+
+/* ── EL EMBUDO ─────────────────────────────────────────────────────────── */
+(function masEmbudo(){
+  const pasosDef = [
+    {n:"Tasa de agenda",  k:"tasaAgenda", vara:12, det:"de conversación a llamada agendada"},
+    {n:"Show rate",       k:"showRate",   vara:68, det:"de agendada a presentada"},
+    {n:"Calificación",    k:"tasaCalif",  vara:75, det:"de presentada a calificada"},
+    {n:"Tasa de cierre",  k:"tasaCierre", vara:30, det:"de calificada a venta"},
+  ];
+  secc("embudo", "Cada paso contra su vara y contra el trimestre pasado",
+    "Las mismas cuatro tasas, medidas sobre los últimos 90 días. La columna que importa es la última: "
+    + "cuánto entraría si ese paso llegara a la vara, con el ticket promedio de hoy.",
+    "Últimos 90 días",
+    tabla(
+      [{t:"Paso"},{t:"Hoy",num:1},{t:"Vara",num:1},{t:"Brecha",num:1},{t:"Trimestre pasado",num:1},{t:"Si llegara a la vara",num:1}],
+      pasosDef.map(ps => {
+        const hoy = A3[ps.k], ant = A3ant[ps.k], dif = hoy - ps.vara;
+        /* ventas extra = arrastrar la mejora hasta el final del embudo */
+        const factor = A3.calificadas ? A3.cierres / A3.calificadas : 0;
+        let extra = 0;
+        if (dif < 0){
+          const base = ps.k === "tasaAgenda" ? A3.leads : ps.k === "showRate" ? A3.agendas
+                     : ps.k === "tasaCalif" ? A3.presentadas : A3.calificadas;
+          const gana = base * (-dif/100);
+          extra = ps.k === "tasaCierre" ? gana
+                : gana * (A3.showRate/100) * (A3.tasaCalif/100) * (A3.tasaCierre/100);
+          if (ps.k === "showRate")  extra = gana * (A3.tasaCalif/100) * (A3.tasaCierre/100);
+          if (ps.k === "tasaCalif") extra = gana * (A3.tasaCierre/100);
+        }
+        return [
+          "<b>"+ps.n+"</b><br><span style='color:var(--muted-fg);font-size:11.5px'>"+ps.det+"</span>",
+          "<b>"+pct(hoy)+"</b>",
+          ps.vara+"%",
+          '<span class="chip '+(dif>=0?"ok":"bad")+'">'+(dif>=0?"+":"−")+Math.abs(dif).toFixed(1).replace(".",",")+" pts</span>",
+          pct(ant) + " <span style='color:var(--muted-fg)'>(" + (hoy-ant>=0?"+":"−")
+            + Math.abs(hoy-ant).toFixed(1).replace(".",",") + ")</span>",
+          extra > .05 ? "<b>+"+money(extra * A3.aov)+"</b>" : "<span style='color:var(--ok)'>en la vara</span>",
+        ];
+      })
+    ));
+
+  const F = D.fuentes.slice().sort((a,b) => (b.cierres/b.leads) - (a.cierres/a.leads));
+  secc("embudo", "El mismo embudo, abierto por fuente",
+    "No todas las conversaciones valen igual. <b>"+F[0].nombre+"</b> convierte a venta "
+    + (F[0].cierres/F[0].leads / (F[F.length-1].cierres/F[F.length-1].leads)).toFixed(1).replace(".",",")
+    + " veces mejor que <b>"+F[F.length-1].nombre+"</b>.",
+    "Últimos 90 días",
+    tabla([{t:"Fuente"},{t:"Leads",num:1},{t:"Agendas",num:1},{t:"Ventas",num:1},
+           {t:"Lead → agenda",num:1},{t:"Lead → venta",num:1},{t:"Valor por lead",num:1}],
+      F.map(f => [f.nombre, miles(f.leads), f.agendas, f.cierres,
+        pct(f.agendas/f.leads*100), "<b>"+pct(f.cierres/f.leads*100,2)+"</b>",
+        money(f.cierres * A3.aov / f.leads)])));
+})();
+
+/* ── CÓMO VIENE EL AÑO ─────────────────────────────────────────────────── */
+(function masAnio(){
+  const filas = M.slice().reverse().map(m => {
+    const d = derivar(agregar([m])), parcial = esParcial(m);
+    return [
+      "<b>"+mesLargo(m.mes)+"</b>" + (parcial ? ' <span class="chip n">parcial</span>' : ""),
+      money(m.facturado), "<b>"+money(m.cobrado)+"</b>", miles(m.leads), m.agendas, m.cierres,
+      pct(d.showRate), pct(d.tasaCierre), money(d.aov), money(d.cac),
+    ];
+  });
+  secc("anio", "Mes a mes, todo junto",
+    "El año completo con las columnas que se miran cuando algo no cierra. El mes en curso va marcado como parcial.",
+    "12 meses",
+    tabla([{t:"Mes"},{t:"Facturado",num:1},{t:"Cobrado",num:1},{t:"Leads",num:1},{t:"Agendas",num:1},
+           {t:"Ventas",num:1},{t:"Show rate",num:1},{t:"Cierre",num:1},{t:"Ticket",num:1},{t:"CAC",num:1}], filas));
+
+  const mejor = M.reduce((a,b) => b.cobrado > a.cobrado ? b : a);
+  const peor  = M.filter(m => !esParcial(m)).reduce((a,b) => b.cobrado < a.cobrado ? b : a);
+  const sobreMeta = M.filter(m => !esParcial(m) && m.cobrado >= D.marca.metaMensual).length;
+  const completos = M.filter(m => !esParcial(m)).length;
+  secc("anio", "Los números del año", "", "Sin contar el mes en curso",
+    '<div class="g3">'
+    + mini(money(anio12.cobrado), "Cobrado en 12 meses", "var(--ok)")
+    + mini(money(anio12.facturado - anio12.cobrado), "Facturado que todavía no entró")
+    + mini(sobreMeta + " de " + completos, "Meses que llegaron a la meta de " + moneyK(D.marca.metaMensual))
+    + mini(mesLargo(mejor.mes), "El mejor mes · " + money(mejor.cobrado), "var(--c1)")
+    + mini(mesLargo(peor.mes), "El más flojo · " + money(peor.cobrado), "var(--warn)")
+    + mini(money(anio12.cobrado/12), "Promedio mensual del año")
+    + "</div>");
+})();
+
+/* ── EL EQUIPO ─────────────────────────────────────────────────────────── */
+(function masEquipo(){
+  const cl = D.closers.slice().sort((a,b) => b.cobrado - a.cobrado);
+  const top = cl[0], tasaTop = top.cierres/top.calificadas;
+  const brecha = cl.slice(1).reduce((s,c) =>
+    s + Math.max(0, (tasaTop - c.cierres/c.calificadas) * c.calificadas), 0);
+  secc("equipo", "Los closers, número por número",
+    "Si todos cerraran como <b>"+top.nombre+"</b>, el trimestre habría tenido <b>"
+    + brecha.toFixed(1).replace(".",",") + "</b> ventas más — cerca de <b>"
+    + money(brecha * A3.aov) + "</b>. Esa es la plata que hay arriba de la mesa sin gastar un peso más en ads.",
+    "Últimos 90 días",
+    tabla([{t:"Closer"},{t:"Presentadas",num:1},{t:"Calificadas",num:1},{t:"Ventas",num:1},
+           {t:"Cierre s/ calif.",num:1},{t:"Cobrado",num:1},{t:"Ticket",num:1},{t:"vs el mejor",num:1}],
+      cl.map(c => {
+        const tc = c.cierres/c.calificadas, dif = (tc - tasaTop) * 100;
+        return ['<span class="av" style="background:'+colorNombre(c.nombre)+';width:24px;height:24px;font-size:10px;display:inline-grid;vertical-align:-7px;margin-right:8px">'
+                + iniciales(c.nombre)+"</span>"+c.nombre,
+          c.presentadas, c.calificadas, "<b>"+c.cierres+"</b>",
+          '<span class="chip '+(tc>=.30?"ok":tc>=.24?"warn":"bad")+'">'+pct(tc*100)+"</span>",
+          "<b>"+money(c.cobrado)+"</b>", money(c.cobrado/c.cierres),
+          dif >= -.05 ? '<span style="color:var(--ok)">es el mejor</span>'
+            : "−"+Math.abs(dif).toFixed(1).replace(".",",")+" pts"];
+      })));
+
+  const st = D.setters.slice().sort((a,b) => b.agendas - a.agendas);
+  const totalMsj = st.reduce((s,x) => s + x.inbound + x.fups, 0);
+  secc("equipo", "Los setters", "El denominador incluye los seguimientos: <b>"+miles(totalMsj)
+    + "</b> conversaciones en total entre inbound y fups.",
+    "Últimos 90 días",
+    tabla([{t:"Setter"},{t:"Inbound",num:1},{t:"Seguimientos",num:1},{t:"Total",num:1},
+           {t:"Agendas",num:1},{t:"Agenda × msj",num:1},{t:"Ventas que salieron",num:1}],
+      st.map(s => {
+        const tot = s.inbound + s.fups, tasa = s.agendas/tot*100;
+        return [s.nombre, miles(s.inbound), miles(s.fups), miles(tot), "<b>"+s.agendas+"</b>",
+          '<span class="chip '+(tasa>=5?"ok":tasa>=4?"warn":"bad")+'">'+pct(tasa)+"</span>",
+          (s.agendas * (A3.showRate/100) * (A3.tasaCalif/100) * (A3.tasaCierre/100)).toFixed(1).replace(".",",")];
+      })));
+})();
+
+/* ── ÚLTIMAS LLAMADAS ──────────────────────────────────────────────────── */
+(function masLlamadas(){
+  const L = D.llamadas;
+  const por = (campo) => {
+    const m = {};
+    L.forEach(l => { const k = l[campo]; (m[k] = m[k] || {n:0, v:0, cierres:0}); m[k].n++;
+      m[k].v += l.monto; if (l.situacion.indexOf("Adentro") === 0) m[k].cierres++; });
+    return Object.keys(m).map(k => Object.assign({k}, m[k])).sort((a,b) => b.v - a.v || b.n - a.n);
+  };
+  const sit = por("situacion"), maxSit = Math.max.apply(null, sit.map(s => s.n));
+  secc("llamadas", "En qué terminaron", "De <b>"+L.length+"</b> llamadas cargadas, <b>"
+    + L.filter(l => l.situacion.indexOf("Adentro") === 0).length + "</b> terminaron adentro.",
+    "",
+    '<div class="card"><div class="card-b"><div class="funnel-x">'
+    + sit.map((s,i) => '<div class="fx-row"><span class="fx-l">'+s.k+"</span>"
+        + '<div class="fx-bar"><div class="fx-fill'+(s.k.indexOf("Adentro")===0?" ok":s.k==="No se presentó"?" bad":"")
+        + '" data-w="'+(s.n/maxSit*100).toFixed(1)+'%" style="transition-delay:'+(i*70)+'ms"></div></div>'
+        + '<span class="fx-n">'+s.n+"</span>"
+        + '<span class="fx-p">'+pct(s.n/L.length*100,0)+(s.v?" · "+money(s.v):"")+"</span></div>").join("")
+    + "</div></div></div>");
+
+  const est = por("estrategia");
+  secc("llamadas", "Qué CTA trae las llamadas que cierran",
+    "El CTA con el que entró el lead, hasta el resultado de la llamada. Es lo que conecta el contenido con la plata.",
+    "",
+    tabla([{t:"Estrategia"},{t:"Llamadas",num:1},{t:"Cerradas",num:1},{t:"Tasa",num:1},{t:"Facturado",num:1}],
+      est.map(e => [ '<span class="chip v">'+e.k+"</span>", e.n, e.cierres,
+        e.n ? pct(e.cierres/e.n*100,0) : "—", e.v ? "<b>"+money(e.v)+"</b>" : "—"])));
+
+  const noCalif = L.filter(l => !l.calificado).length;
+  secc("llamadas", "Calidad de lo que entra", "", "",
+    '<div class="g3">'
+    + mini(pct(L.filter(l => l.calificado).length / L.length * 100, 0), "De las llamadas cargadas, calificaban")
+    + mini(noCalif, "No calificaban — tiempo del closer que se fue", noCalif ? "var(--warn)" : null)
+    + mini(L.filter(l => l.situacion === "No se presentó").length, "No se presentaron", "var(--bad)")
+    + "</div>");
+})();
+
+/* ── DE DÓNDE SALEN ────────────────────────────────────────────────────── */
+(function masFuentes(){
+  const F = D.fuentes.slice();
+  const totalLeads = F.reduce((s,f) => s+f.leads, 0);
+  const conPlata = F.map(f => Object.assign({}, f, {plata: f.cierres * A3.aov}))
+    .sort((a,b) => b.plata - a.plata);
+  const invAds = M.slice(-3).reduce((s,m) => s + m.ads, 0);
+  const ads = F.filter(f => /ads/i.test(f.nombre))[0];
+  secc("fuentes", "Cuál escalar y cuál soltar",
+    "Ordenadas por la plata que dejaron, no por el volumen. La última columna es la que decide dónde poner el próximo peso.",
+    "Últimos 90 días",
+    tabla([{t:"Fuente"},{t:"Leads",num:1},{t:"% del total",num:1},{t:"Agendas",num:1},{t:"Ventas",num:1},
+           {t:"Facturado",num:1},{t:"Por cada 100 leads",num:1}],
+      conPlata.map(f => [
+        '<span style="display:inline-block;width:9px;height:9px;border-radius:3px;background:'
+          + PAL[F.indexOf(D.fuentes.filter(x=>x.nombre===f.nombre)[0]) % PAL.length]
+          + ';margin-right:9px;vertical-align:0"></span>' + f.nombre,
+        miles(f.leads), pct(f.leads/totalLeads*100,0), f.agendas, f.cierres,
+        "<b>"+money(f.plata)+"</b>", money(f.plata/f.leads*100)])));
+
+  secc("fuentes", "Lo que cuesta traerlos", "", "Últimos 90 días",
+    '<div class="g3">'
+    + mini(money(invAds), "Invertido en ads")
+    + (ads ? mini(money(invAds/ads.leads), "Costo por lead pago") : "")
+    + (ads ? mini(money(invAds/ads.cierres), "Costo por venta pagada", invAds/ads.cierres <= 600 ? "var(--ok)" : "var(--warn)") : "")
+    + mini(miles(totalLeads - (ads ? ads.leads : 0)), "Leads orgánicos — sin costo de medios", "var(--ok)")
+    + mini(pct((totalLeads - (ads ? ads.leads : 0))/totalLeads*100, 0), "Del volumen es orgánico")
+    + mini((A3.cobrado / invAds).toFixed(1).replace(".",",") + "x", "Cobrado sobre lo invertido en ads", "var(--c1)")
+    + "</div>");
+})();
+
+/* ── EL CONTENIDO ──────────────────────────────────────────────────────── */
+(function masContenido(){
+  if (!D.reels || !D.reels.length) return;
+  const R = D.reels;
+  const kw = {};
+  R.forEach(r => { const k = r.cta || "(sin keyword)";
+    kw[k] = kw[k] || {n:0, views:0, leads:0, agendas:0, ventas:0, plata:0};
+    const o = kw[k]; o.n++; o.views += r.views; o.leads += r.leads;
+    o.agendas += r.agendas; o.ventas += r.ventas; o.plata += r.cobrado; });
+  const K = Object.keys(kw).map(k => Object.assign({k}, kw[k])).sort((a,b) => b.plata - a.plata || b.leads - a.leads);
+  secc("contenido", "Qué keyword trae la plata",
+    "La keyword es lo que conecta el reel con el CRM. Sin ella el lead entra sin nombre y esta tabla no existe.",
+    "Últimos 90 días",
+    tabla([{t:"Keyword"},{t:"Reels",num:1},{t:"Views",num:1},{t:"Leads",num:1},
+           {t:"Leads × 1k views",num:1},{t:"Agendas",num:1},{t:"Ventas",num:1},{t:"Facturado",num:1}],
+      K.map(x => ['<span class="chip '+(x.k.charAt(0)==="(" ? "n" : "v")+'">'+x.k+"</span>",
+        x.n, miles(x.views), miles(x.leads), (x.leads/x.views*1000).toFixed(1).replace(".",","),
+        x.agendas, x.ventas, x.plata ? "<b>"+money(x.plata)+"</b>" : "—"])));
+
+  const vistas = R.reduce((s,r) => s+r.views, 0), leads = R.reduce((s,r) => s+r.leads, 0);
+  const plata = R.reduce((s,r) => s+r.cobrado, 0);
+  const virales = R.filter(r => r.views >= 100000), chicos = R.filter(r => r.views < 50000);
+  const plataV = virales.reduce((s,r) => s+r.cobrado, 0), plataC = chicos.reduce((s,r) => s+r.cobrado, 0);
+  secc("contenido", "Views contra plata", "La pregunta que nadie se hace: cuánto de lo cobrado vino de los reels que explotaron.",
+    "Últimos 90 días",
+    '<div class="g3">'
+    + mini(miles(vistas), "Views en total")
+    + mini(money(plata/vistas*1000), "Lo que deja cada mil views", "var(--c1)")
+    + mini(money(plata/leads), "Lo que deja cada lead")
+    + mini(virales.length + " reels", "Pasaron las 100k views")
+    + mini(pct(plataV/plata*100,0), "De lo cobrado vino de esos", plataV/plata < .5 ? "var(--warn)" : null)
+    + mini(pct(plataC/plata*100,0), "Vino de reels de menos de 50k views", "var(--ok)")
+    + "</div>");
+})();
+
+/* ── COBRANZAS ─────────────────────────────────────────────────────────── */
+(function masCobranzas(){
+  const porCloser = {};
+  D.cuotas.forEach(c => { const o = porCloser[c.closer] = porCloser[c.closer] || {t:0, ok:0, mal:0, n:0};
+    o.t += c.monto; o.n++;
+    if (c.estado === "cobrado") o.ok += c.monto;
+    if (c.estado === "vencida" || c.estado === "protocolo") o.mal += c.monto; });
+  const PC = Object.keys(porCloser).map(k => Object.assign({k}, porCloser[k])).sort((a,b) => b.mal - a.mal || b.t - a.t);
+  secc("cobranzas", "Quién tiene la plata parada",
+    "La cuota la firma el closer que cerró: es el que tiene que levantar el teléfono cuando no entra.",
+    "Estado de hoy",
+    tabla([{t:"Closer"},{t:"Cuotas",num:1},{t:"Total del mes",num:1},{t:"Ya cobrado",num:1},
+           {t:"Vencido",num:1},{t:"% en riesgo",num:1}],
+      PC.map(c => [c.k, c.n, money(c.t), money(c.ok),
+        c.mal ? '<span style="color:var(--bad);font-weight:600">'+money(c.mal)+"</span>" : "—",
+        '<span class="chip '+(c.mal/c.t>=.3?"bad":c.mal?"warn":"ok")+'">'+pct(c.mal/c.t*100,0)+"</span>"])));
+
+  const sem = [0,0,0,0,0];
+  D.cuotas.forEach(c => { const d = +c.vence.split("-")[2]; sem[Math.min(4, Math.floor((d-1)/7))] += c.monto; });
+  const maxSem = Math.max.apply(null, sem);
+  secc("cobranzas", "Cuándo entra", "Lo que vence cada semana del mes, para saber qué semana es la floja.",
+    "Este mes",
+    '<div class="card"><div class="card-b"><div class="funnel-x">'
+    + sem.map((v,i) => v ? '<div class="fx-row"><span class="fx-l">Semana '+(i+1)+"</span>"
+        + '<div class="fx-bar"><div class="fx-fill" data-w="'+(v/maxSem*100).toFixed(1)+'%" style="transition-delay:'+(i*70)+'ms"></div></div>'
+        + '<span class="fx-n">'+moneyK(v)+"</span>"
+        + '<span class="fx-p">días '+(i*7+1)+"–"+Math.min(31,(i+1)*7)+"</span></div>" : "").join("")
+    + "</div></div></div>");
+})();
+
+/* ── HACIA DÓNDE VA ────────────────────────────────────────────────────── */
+(function masProyeccion(){
+  const meta = D.marca.metaMensual;
+  const ult = M[M.length-1];
+  const proy = esParcial(ult) ? ult.cobrado / diasDe(ult) * ult.diasTotal : ult.cobrado;
+  /* proyección inversa: para llegar a la meta, cuántos leads hacen falta */
+  const valorLead = A3.leads ? A3.cobrado / A3.leads : 0;
+  const leadsMeta = valorLead ? meta / valorLead : 0;
+  const leadsHoy  = A3.leads / 3;
+  secc("proyeccion", "Qué hace falta para llegar a la meta",
+    "El camino inverso: se parte del objetivo de <b>"+money(meta)+"</b> y se calcula hacia atrás, "
+    + "con las tasas reales de los últimos 90 días.",
+    "Por mes",
+    '<div class="g3">'
+    + mini(miles(leadsMeta), "Leads por mes que hacen falta")
+    + mini(miles(leadsHoy), "Los que entran hoy", leadsHoy >= leadsMeta ? "var(--ok)" : "var(--warn)")
+    + mini((leadsHoy >= leadsMeta ? "+" : "−") + miles(Math.abs(leadsMeta - leadsHoy)),
+        leadsHoy >= leadsMeta ? "De sobra" : "Faltan cada mes", leadsHoy >= leadsMeta ? "var(--ok)" : "var(--bad)")
+    + mini(miles(leadsMeta * A3.tasaAgenda/100), "Agendas por mes")
+    + mini((leadsMeta * A3.tasaAgenda/100 * A3.showRate/100 * A3.tasaCalif/100 * A3.tasaCierre/100).toFixed(1).replace(".",","),
+        "Ventas por mes, con las tasas de hoy")
+    + mini(money(valorLead), "Lo que vale hoy cada conversación", "var(--c1)")
+    + "</div>");
+
+  /* tres escenarios sobre el mismo motor */
+  const completos = M.filter(m => !esParcial(m));
+  const base = completos.slice(-3).reduce((s,m) => s+m.cobrado, 0)/3;
+  const prev = completos.slice(-6,-3).reduce((s,m) => s+m.cobrado, 0)/3;
+  const g = prev > 0 ? Math.pow(base/prev, 1/3) - 1 : 0;
+  const ESC = [
+    {n:"Conservador", d:"se frena el crecimiento y el mes se repite", g:0,    c:"var(--muted-fg)"},
+    {n:"Al ritmo de hoy", d:"sigue el "+pct(g*100)+" mensual de los últimos 3 meses", g:g, c:"var(--c1)"},
+    {n:"Si el cierre llega a la vara", d:"mismo volumen, tasa de cierre al 30%", g:g + (30-A3.tasaCierre)/100/6, c:"var(--ok)"},
+  ];
+  secc("proyeccion", "Tres escenarios, mismo motor",
+    "Los tres parten del cierre proyectado de este mes (<b>"+money(proy)+"</b>) y solo cambia el ritmo.",
+    "Próximos 3 meses",
+    tabla([{t:"Escenario"},{t:"Mes +1",num:1},{t:"Mes +2",num:1},{t:"Mes +3",num:1},{t:"Los 3 juntos",num:1},{t:"vs meta",num:1}],
+      ESC.map(e => {
+        const v = [], acum = [];
+        let x = proy;
+        for (let i=0;i<3;i++){ x = x*(1+e.g); v.push(x); }
+        const tot = v.reduce((s,y)=>s+y,0), difMeta = v[2] - meta;
+        return ['<b style="color:'+e.c+'">'+e.n+"</b><br><span style='color:var(--muted-fg);font-size:11.5px'>"+e.d+"</span>",
+          money(v[0]), money(v[1]), "<b>"+money(v[2])+"</b>", money(tot),
+          '<span class="chip '+(difMeta>=0?"ok":"bad")+'">'+(difMeta>=0?"+":"−")+money(Math.abs(difMeta))+"</span>"];
+      })));
+})();
+
+/* ── RESUMEN DEL MES ───────────────────────────────────────────────────── */
+(function masResumen(){
+  const meta = D.marca.metaMensual, ult = M[M.length-1];
+  const dias = diasDe(ult), total = ult.diasTotal || dias, restan = total - dias;
+  const falta = Math.max(0, meta - ult.cobrado);
+  const porDia = restan > 0 ? falta / restan : 0;
+  const vencidas = D.cuotas.filter(c => c.estado === "vencida" || c.estado === "protocolo");
+  const pend = D.llamadas.filter(l => l.situacion === "Pendiente" || l.situacion === "Reagendado");
+  const segui = D.llamadas.filter(l => l.situacion === "Adentro en seguimiento");
+
+  /* lo que hay que hacer hoy, ordenado por plata */
+  const ACC = [];
+  if (vencidas.length) ACC.push({
+    ico:"alert", est:"r", t:"Reclamar "+money(vencidas.reduce((s,c)=>s+c.monto,0)),
+    d:"<b>"+vencidas.length+"</b> cuotas vencidas o en protocolo: "
+      + vencidas.slice(0,3).map(c => c.alumno).join(", ")
+      + (vencidas.length>3 ? " y "+(vencidas.length-3)+" más" : "")
+      + ". Es plata ya vendida, no hace falta vender nada nuevo.",
+    ir:"s-cobranzas", cta:"Ver cobranzas"});
+  if (pend.length) ACC.push({
+    ico:"phone", est:"y", t:pend.length+" llamadas sin resolver",
+    d:"Quedaron en <i>pendiente</i> o <i>reagendado</i>. Cada día que pasa la agenda se enfría.",
+    ir:"s-llamadas", cta:"Ver llamadas"});
+  if (segui.length) ACC.push({
+    ico:"trophy", est:"g", t:money(segui.reduce((s,l)=>s+l.monto,0))+" cerrando en seguimiento",
+    d:"<b>"+segui.length+"</b> ventas que entraron después de la llamada. Son las que se caen si nadie las persigue.",
+    ir:"s-llamadas", cta:"Ver llamadas"});
+  ACC.push({
+    ico:"target", est: porDia <= (ult.cobrado/dias) ? "g" : "y",
+    t: falta ? money(porDia) + " por día" : "Meta cumplida",
+    d: falta ? "Es lo que hay que cobrar en los <b>"+restan+"</b> días que quedan para llegar a "
+        + money(meta) + ". Hoy el ritmo es de <b>"+money(ult.cobrado/dias)+"</b> por día."
+      : "El mes ya pasó la meta de "+money(meta)+".",
+    ir:"s-anio", cta:"Ver el año"});
+
+  secc("resumen", "Lo que hay que hacer hoy",
+    "Sale de los mismos datos: lo que está vencido, lo que quedó sin resolver y lo que falta para la meta.",
+    "",
+    '<div class="acciones">' + ACC.map((a,i) =>
+      '<div class="accion '+a.est+'">'
+      + '<div class="kpi-h"><span class="ico-box">'+ico(a.ico)+'</span><span class="acc-n">0'+(i+1)+"</span></div>"
+      + "<p class='acc-t'>"+a.t+"</p><p>"+a.d+"</p>"
+      + '<button type="button" class="acc-b" data-ir="'+a.ir+'">'+a.cta
+      + ' <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></button>'
+      + "</div>").join("") + "</div>");
+
+  /* el resto del panel, resumido, para no tener que entrar a ver si hay algo */
+  const F = D.fuentes.slice().sort((a,b) => b.leads - a.leads)[0];
+  const cl = D.closers.slice().sort((a,b) => b.cobrado - a.cobrado)[0];
+  const mejorReel = (D.reels||[]).slice().sort((a,b) => b.cobrado - a.cobrado)[0];
+  const RES = [
+    {ir:"s-embudo",     t:"El embudo",        v:pct(A3.cierres/A3.leads*100,2),
+     d:"de conversación a venta · "+miles(A3.leads)+" leads en 90 días"},
+    {ir:"s-anio",       t:"Cómo viene el año", v:money(anio12.cobrado),
+     d:"cobrado en 12 meses · promedio "+money(anio12.cobrado/12)+" por mes"},
+    {ir:"s-equipo",     t:"El equipo",        v:cl.nombre,
+     d:"el que más cerró · "+money(cl.cobrado)+" en 90 días"},
+    {ir:"s-fuentes",    t:"De dónde salen",   v:F.nombre,
+     d:pct(F.leads/D.fuentes.reduce((s,x)=>s+x.leads,0)*100,0)+" del volumen · "+miles(F.leads)+" leads"},
+    {ir:"s-contenido",  t:"El contenido",     v:mejorReel ? money(mejorReel.cobrado) : "—",
+     d:mejorReel ? "el mejor reel · "+miles(mejorReel.views)+" views" : ""},
+    {ir:"s-cobranzas",  t:"Cobranzas",        v:money(CU.porCobrar),
+     d:"por cobrar este mes · "+money(CU.vencido)+" vencido"},
+  ];
+  secc("resumen", "El resto del panel", "Un vistazo a cada página, para no tener que entrar a ver si hay algo.", "",
+    '<div class="g3 atajos">' + RES.map(r =>
+      '<button type="button" class="atajo" data-ir="'+r.ir+'">'
+      + '<span class="atajo-t">'+r.t+"</span>"
+      + '<span class="atajo-v">'+r.v+"</span>"
+      + '<span class="atajo-d">'+r.d+"</span></button>").join("") + "</div>");
+
+  document.addEventListener("click", ev => {
+    const b = ev.target.closest("[data-ir]");
+    if (b && window.__ir) window.__ir(b.dataset.ir);
   });
 })();
 

@@ -47,6 +47,13 @@ la `thumbnail_url` de Instagram, caduca a los pocos días y las tarjetas quedan 
 actualizarlas: bajar el JPG, recortarlo 9:16, redimensionar a 240×427 y guardarlo con el shortcode
 de nombre.
 
+**El resto de cada página se inyecta desde JS** (bloque 12b): `secc(pagina, titulo, titular, periodo,
+cuerpo)` crea una `<section class="rise">` y la cuelga de `#p-<pagina>`. Se hace así para no duplicar
+marcado y porque `ir()` ya recorre las secciones de la página que abre, así que entran con la misma
+animación. Helpers disponibles ahí: `tabla(cols, filas)` y `mini(valor, label, color)`.
+**Toda sección nueva va con un período explícito** (`marca-per`) — mezclar un bloque de 90 días con
+uno del mes en curso sin decirlo es la forma más fácil de que dos números no cierren.
+
 **La sidebar** se genera desde el array `GRUPOS` del bloque 12. Cada item apunta al `id` de una
 `<section class="rise">` y lleva una cifra viva que sale del mapa `CIFRA`. **El orden de la sidebar
 tiene que ser el orden real de las secciones en el HTML**: si no coincide, el usuario hace clic y el
