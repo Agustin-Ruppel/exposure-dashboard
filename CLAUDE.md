@@ -34,7 +34,12 @@ Dentro de `index.html`, el JS está numerado por bloques y en este orden:
 | animación | `countUp` `activar` y el `IntersectionObserver` |
 | tooltip | `mostrarTip` / `ocultarTip` |
 | helpers de gráfico | `escala` `pathDe` `largoPath` `sparkline` `colorNombre` |
-| 1-12 | encabezado, hero, KPIs, año, embudo, equipo, fuentes, contenido, cobranzas, proyección, llamadas, pie, arranque |
+| 1-13 | encabezado, hero, KPIs, año, embudo, equipo, fuentes, contenido, cobranzas, proyección, llamadas, pie, **sidebar**, arranque |
+
+**La sidebar** se genera desde el array `GRUPOS` del bloque 12. Cada item apunta al `id` de una
+`<section class="rise">` y lleva una cifra viva que sale del mapa `CIFRA`. **El orden de la sidebar
+tiene que ser el orden real de las secciones en el HTML**: si no coincide, el usuario hace clic y el
+scroll salta para atrás. Si agregás una sección, sumala en los dos lugares.
 
 ## Cómo se anima (importante al agregar cosas)
 

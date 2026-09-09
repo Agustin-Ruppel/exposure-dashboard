@@ -44,6 +44,44 @@ body{
   background-image:radial-gradient(oklch(.30 .02 270/.5) .8px,transparent .8px);
   background-size:22px 22px;
 }
+/* ── sidebar (el patrón del CRM) ───────────────────────────────────────────
+   Fija a la izquierda, agrupada por tema, con el item activo marcado por una
+   barrita de 3px además del fondo — el color solo no alcanza para saber dónde
+   estás parado. El orden de los grupos es el orden real de la página: si no,
+   hacés clic y el scroll salta para atrás. */
+.app{padding-left:var(--side-w,252px)}
+.side{position:fixed;left:0;top:0;bottom:0;width:252px;z-index:30;
+  display:flex;flex-direction:column;
+  background:oklch(.155 .015 270/.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-right:1px solid var(--border)}
+.side-top{padding:24px 20px 18px;border-bottom:1px solid var(--border)}
+.side-top .logo{font-size:23px}
+.side-sub{margin:9px 0 0;font:600 9.5px/1 var(--mono);letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted-fg)}
+.side-nav{flex:1;overflow-y:auto;padding:16px 12px;scrollbar-width:thin}
+.side-grupo + .side-grupo{margin-top:18px}
+.side-grupo>p{margin:0 0 7px;padding:0 12px;
+  font:700 10px/1 var(--sans);letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted-fg);opacity:.6;user-select:none}
+.side-i{position:relative;display:flex;align-items:center;gap:12px;width:100%;
+  border:0;background:transparent;cursor:pointer;text-align:left;
+  border-radius:12px;padding:9px 12px;font:500 13px/1.3 var(--sans);color:var(--muted-fg);
+  transition:background .2s var(--e),color .2s var(--e)}
+.side-i + .side-i{margin-top:2px}
+.side-i svg{width:18px;height:18px;flex:0 0 18px;transition:transform .2s var(--e)}
+.side-i:hover{color:var(--fg);background:oklch(1 0 0/.045)}
+.side-i:hover svg{transform:scale(1.06)}
+.side-i:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
+.side-i.on{color:var(--fg);font-weight:600;background:oklch(.68 .22 280/.10)}
+.side-i.on svg{transform:scale(1.1);color:var(--c1)}
+.side-i.on::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);
+  width:3px;height:20px;border-radius:99px;background:var(--primary)}
+.side-i .n{margin-left:auto;font:600 11px/1 var(--mono);color:var(--muted-fg);
+  font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.side-i.on .n{color:var(--c1)}
+.side-pie{padding:14px 16px;border-top:1px solid var(--border)}
+.side-pie .sello{font-size:10.5px;padding:6px 10px}
+
 .wrap{max-width:1240px;margin:0 auto;padding:0 20px 80px}
 .num,.kpi-n,.hero-n,.delta,td.num,.ejeY,.ejeX,.val,.chip,.lb-v,.big{
   font-variant-numeric:tabular-nums;
@@ -58,7 +96,7 @@ body{
 }
 
 /* ── header ─────────────────────────────────────────────────────────────── */
-.top{padding:38px 0 4px}
+.top{padding:34px 0 4px}
 /* ── el wordmark ────────────────────────────────────────────────────────────
    Reconstruido con tipografía del sistema: pesada, condensada con scaleX (que
    funciona con cualquier fuente, a diferencia de font-stretch) y con la O
@@ -327,6 +365,10 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
   font-size:12.5px;color:var(--muted-fg);line-height:1.7}
 .pie-doc b{color:var(--fg);font-weight:600}
 
+@media (max-width:1100px){
+  .app{padding-left:0}
+  .side{display:none}
+}
 @media (max-width:900px){
   .g2{grid-template-columns:1fr}
   .donut-box{grid-template-columns:1fr;justify-items:center}
@@ -360,11 +402,19 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
 </style>
 </head>
 <body>
+<aside class="side" id="side">
+  <div class="side-top">
+    <div id="logo"></div>
+    <p class="side-sub" id="sideSub">Panel del negocio</p>
+  </div>
+  <nav class="side-nav" id="sideNav" aria-label="Secciones del panel"></nav>
+  <div class="side-pie" id="sidePie"></div>
+</aside>
+
+<div class="app">
 <div class="wrap">
 
   <header class="top">
-    <div id="logo"></div>
-    <span class="marca"><span class="pip"></span> <span id="mBajada">Panel del negocio</span></span>
     <h1 id="tTitulo">Cargando…</h1>
     <p class="lead" id="tLead"></p>
     <div class="sellos" id="tSellos"></div>
@@ -378,12 +428,25 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     </div>
   </header>
 
-  <section class="rise">
+  <section class="rise" id="s-resumen">
     <div class="card hero" id="hero"></div>
     <div class="kpis" id="kpis"></div>
   </section>
 
-  <section class="rise">
+  
+<section class="rise" id="s-embudo">
+    <div class="sec-h">
+      <div>
+        <h2>El embudo</h2>
+        <p class="titular" id="tEmbudo"></p>
+      </div>
+      <span class="marca-per" id="perEmbudo"></span>
+    </div>
+    <div class="card" id="cardEmbudo"></div>
+  </section>
+
+  
+<section class="rise" id="s-anio">
     <div class="sec-h">
       <div>
         <h2>Cómo viene el año</h2>
@@ -411,18 +474,8 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     </div></div>
   </section>
 
-  <section class="rise">
-    <div class="sec-h">
-      <div>
-        <h2>El embudo</h2>
-        <p class="titular" id="tEmbudo"></p>
-      </div>
-      <span class="marca-per" id="perEmbudo"></span>
-    </div>
-    <div class="card" id="cardEmbudo"></div>
-  </section>
-
-  <section class="rise">
+  
+<section class="rise" id="s-equipo">
     <div class="sec-h">
       <div>
         <h2>El equipo</h2>
@@ -444,7 +497,17 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     </div>
   </section>
 
-  <section class="rise">
+  
+<section class="rise" id="s-llamadas">
+    <div class="sec-h">
+      <div>
+        <h2>Las últimas llamadas</h2>
+        <p class="titular" id="tLlamadas"></p>
+      </div>
+    </div>
+    <div class="tabla-wrap"><table id="tablaLlamadas"></table></div>
+  </section>
+<section class="rise" id="s-fuentes">
     <div class="sec-h">
       <div>
         <h2>De dónde salen los leads</h2>
@@ -460,7 +523,8 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     </div></div>
   </section>
 
-  <section class="rise">
+  
+<section class="rise" id="s-contenido">
     <div class="sec-h">
       <div>
         <h2>El contenido que trae llamadas</h2>
@@ -471,7 +535,8 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     <div class="g3" id="contenido"></div>
   </section>
 
-  <section class="rise">
+  
+<section class="rise" id="s-cobranzas">
     <div class="sec-h">
       <div>
         <h2>Cobranzas del mes</h2>
@@ -483,7 +548,8 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     <div class="tabla-wrap"><table id="tablaCuotas"></table></div>
   </section>
 
-  <section class="rise">
+  
+<section class="rise" id="s-proyeccion">
     <div class="sec-h">
       <div>
         <h2>Hacia dónde va</h2>
@@ -502,18 +568,12 @@ td.fecha{font:500 12px var(--mono);color:var(--muted-fg);white-space:nowrap}
     </div></div>
   </section>
 
-  <section class="rise">
-    <div class="sec-h">
-      <div>
-        <h2>Las últimas llamadas</h2>
-        <p class="titular" id="tLlamadas"></p>
-      </div>
-    </div>
-    <div class="tabla-wrap"><table id="tablaLlamadas"></table></div>
-  </section>
+  
+
 
   <p class="pie-doc" id="pieDoc"></p>
 
+</div>
 </div>
 
 <div class="tip" id="tip"></div>
@@ -760,18 +820,16 @@ const O_SVG = '<svg class="o" viewBox="0 0 100 100" aria-hidden="true">'
     '<span class="logo" role="img" aria-label="' + esc(D.marca.nombre) + '">'
     + html + "<sup>&#8482;</sup></span>";
 })();
-document.getElementById("mBajada").textContent  = D.marca.bajada;
 document.title = D.marca.nombre + " · " + D.marca.bajada;
 document.getElementById("tTitulo").textContent  = mesLargo(ultimo.mes).replace(/^./, c => c.toUpperCase());
 const proyMes = ultimo.cobrado / diasDe(ultimo) * (ultimo.diasTotal || diasDe(ultimo));
 document.getElementById("tLead").innerHTML =
   "Van <b>" + money(ultimo.cobrado) + "</b> cobrados en " + diasDe(ultimo) + " días. Al ritmo de hoy el mes cierra en <b>"
   + money(proyMes) + "</b>, contra una meta de <b>" + money(D.marca.metaMensual) + "</b>.";
+/* el sello de demo vive en el pie de la sidebar; acá iría repetido */
 document.getElementById("tSellos").innerHTML =
   '<span class="sello"><span class="punto"></span>' + agregar(M.slice(-3)).cierres + " ventas en 90 días · "
-  + ultimo.alumnos + " alumnos activos</span>"
-  + (typeof MODO_DEMO !== "undefined" && MODO_DEMO
-      ? '<span class="sello demo"><span class="punto"></span>datos de demostración</span>' : "");
+  + ultimo.alumnos + " alumnos activos</span>";
 
 /* ══ 2 · hero + KPIs ══════════════════════════════════════════════════════ */
 const selP = document.getElementById("periodo");
@@ -1243,12 +1301,84 @@ document.getElementById("pieDoc").innerHTML =
   + (typeof MODO_DEMO !== "undefined" && MODO_DEMO
       ? " · Los números cargados son de <b>demostración</b>: reemplazalos en datos.js y poné MODO_DEMO en false." : "");
 
-/* ══ 12 · arranque ════════════════════════════════════════════════════════ */
+/* ══ 12 · la sidebar ══════════════════════════════════════════════════════
+   La nav se genera desde este mapa. Cada item lleva un número vivo a la
+   derecha: sin eso es un índice; con eso, el menú ya te dice algo. */
+(function sidebar(){
+  const a90 = derivar(agregar(M.slice(-3)));
+  const GRUPOS = [
+    {g:"Día a día", items:[
+      {id:"s-resumen",    n:"Resumen del mes", ico:"wallet"},
+      {id:"s-embudo",     n:"El embudo",       ico:"target"},
+    ]},
+    {g:"Ventas", items:[
+      {id:"s-anio",       n:"Cómo viene el año", ico:"file"},
+      {id:"s-equipo",     n:"El equipo",         ico:"users"},
+      {id:"s-llamadas",   n:"Últimas llamadas",  ico:"phone"},
+    ]},
+    {g:"Adquisición", items:[
+      {id:"s-fuentes",    n:"De dónde salen",  ico:"users"},
+      {id:"s-contenido",  n:"El contenido",    ico:"video"},
+    ]},
+    {g:"Plata", items:[
+      {id:"s-cobranzas",  n:"Cobranzas",       ico:"coin"},
+      {id:"s-proyeccion", n:"Hacia dónde va",  ico:"trophy"},
+    ]},
+  ];
+  /* el numerito de cada item — se recalcula al cambiar de período */
+  const CIFRA = {
+    "s-embudo":    c => pct(c.act.leads ? c.act.cierres/c.act.leads*100 : 0, 1),
+    "s-anio":      () => moneyK(anio12.cobrado),
+    "s-equipo":    () => D.closers.length + D.setters.length,
+    "s-llamadas":  () => D.llamadas.length,
+    "s-fuentes":   () => miles(D.fuentes.reduce((s,f) => s+f.leads, 0)),
+    "s-contenido": () => miles(D.contenido.reduce((s,x) => s+x.piezas, 0)),
+    "s-cobranzas": () => moneyK(CU.porCobrar + CU.vencido),
+    "s-proyeccion":() => "",
+    "s-resumen":   c => moneyK(c.act.cobrado),
+  };
+  document.getElementById("sideSub").textContent = D.marca.bajada;
+  document.getElementById("sideNav").innerHTML = GRUPOS.map(gr =>
+    '<div class="side-grupo"><p>'+gr.g+"</p>"
+    + gr.items.map(it => '<button type="button" class="side-i" data-id="'+it.id+'">'
+        + ico(it.ico) + '<span>'+it.n+'</span><span class="n" data-cifra="'+it.id+'"></span></button>').join("")
+    + "</div>").join("");
+  document.getElementById("sidePie").innerHTML =
+    '<span class="sello'+(typeof MODO_DEMO !== "undefined" && MODO_DEMO ? " demo" : "")+'">'
+    + '<span class="punto"></span>' + (typeof MODO_DEMO !== "undefined" && MODO_DEMO
+        ? "datos de demostración" : "datos reales") + "</span>";
+
+  const items = [].slice.call(document.querySelectorAll(".side-i"));
+  items.forEach(b => b.addEventListener("click", () => {
+    const s = document.getElementById(b.dataset.id);
+    if (s) s.scrollIntoView({behavior: REDUCIR ? "auto" : "smooth", block:"start"});
+  }));
+  /* scroll-spy: marca la sección cuya parte visible manda. Se recalcula en el
+     scroll y no con un observer por sección, porque con secciones de altura
+     muy distinta el observer prende dos a la vez. */
+  const marcar = () => {
+    const y = scrollY + innerHeight * .28;
+    let act = items[0] && items[0].dataset.id;
+    items.forEach(b => { const s = document.getElementById(b.dataset.id);
+      if (s && s.offsetTop <= y) act = b.dataset.id; });
+    items.forEach(b => b.classList.toggle("on", b.dataset.id === act));
+  };
+  addEventListener("scroll", marcar, {passive:true});
+  addEventListener("resize", marcar);
+  marcar();
+  window.__cifras = c => items.forEach(b => {
+    const f = CIFRA[b.dataset.id];
+    b.querySelector(".n").textContent = f ? f(c) : "";
+  });
+})();
+
+/* ══ 13 · arranque ════════════════════════════════════════════════════════ */
 function pintarPeriodo(){
   const c = calc(selP.value);
   pintarHero(c); pintarKpis(c); pintarEmbudo(c);
   const sec = document.querySelector("section.rise");
   activar(sec); activar(document.getElementById("cardEmbudo").closest("section"));
+  if (window.__cifras) window.__cifras(c);
 }
 selP.addEventListener("change", pintarPeriodo);
 pintarPeriodo();
