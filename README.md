@@ -3,6 +3,8 @@
 Un dashboard de negocio en **un solo archivo**. Sin base de datos, sin servidor, sin instalar nada.
 Se abre con doble clic y funciona hasta con el wifi apagado.
 
+### 👉 [Verlo funcionando](https://agustin-ruppel.github.io/exposure-dashboard/)
+
 ![captura](captura.png)
 
 ---
